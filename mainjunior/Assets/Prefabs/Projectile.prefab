@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 218238699447471674}
   - component: {fileID: 2212226696754534741}
   - component: {fileID: 6254742008073575161}
-  - component: {fileID: -7110089988913631175}
   m_Layer: 13
   m_Name: Projectile
   m_TagString: StickyBullet
@@ -86,32 +85,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 2
---- !u!61 &-7110089988913631175
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2369842850242115381}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  speed: 4.5
 --- !u!1 &3194439133722096537
 GameObject:
   m_ObjectHideFlags: 0

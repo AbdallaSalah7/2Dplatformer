@@ -52,15 +52,15 @@ public class PlayerControl : MonoBehaviour
     
 
     [Header("Sticky&bullet")]
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private Transform slimePoint;
-    [SerializeField] private GameObject[] slimeballs;
-    private float cooldownTimer = Mathf.Infinity;
+    //[SerializeField] private float attackCooldown;
+    //[SerializeField] private Transform slimePoint;
+    //[SerializeField] private GameObject[] slimeballs;
+    //private float cooldownTimer = Mathf.Infinity;
     public LayerMask stickyWallLayer;
-    public GameObject bulletPrefab;
+    //public GameObject bulletPrefab;
     public Tilemap hitmap;
-    //public Projectilebehaviour ProjectilePrefab;
-    //public Transform LaunchOffset;
+    public StickyBullet bulletpre;
+    public Transform LaunchOffset;
     
     // Start is called before the first frame update
     private void Awake()
@@ -90,7 +90,7 @@ public class PlayerControl : MonoBehaviour
         {
             if (isGrounded)
             {
-                canDoubleJump = true;
+                canDoubleJump = false;
             }
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
 
@@ -143,10 +143,10 @@ public class PlayerControl : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
 
-         if (Input.GetKeyDown(KeyCode.S) && cooldownTimer > attackCooldown){
+         if (Input.GetKeyDown(KeyCode.S)/* && cooldownTimer > attackCooldown*/){
             // Call the Shoot method
             Shoot();
-            cooldownTimer += Time.deltaTime;
+            //cooldownTimer += Time.deltaTime;
             }
     /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
@@ -213,12 +213,12 @@ public class PlayerControl : MonoBehaviour
 
     void Shoot()
     {
-    	Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    	/*Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     	Vector2 direction = ((Vector2)mousePos - (Vector2)transform.position).normalized;
     	GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
     	
 
-		if((mousePos.x - transform.position.x) > 0){
+		if((mousePos.x - transform.position.x) > 0){  //no mouse bro
 
 			hitmap.SendMessage("SetBulletDirectionRight");
 		}
@@ -229,14 +229,28 @@ public class PlayerControl : MonoBehaviour
 		}
 
 
-		bullet.GetComponent<Rigidbody2D>().velocity = direction * 7f;
+		bullet.GetComponent<Rigidbody2D>().velocity = direction * 7f;*/
         //anim.SetTrigger("shoot");
         //cooldownTimer = 0;
 
         //slimeballs[0].transform.position = slimePoint.position;
         //slimeballs[0].GetComponent<StickyBullet>().SetDirection(Mathf.Sign(transform.localScale.x));
+
+        //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
+        Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
+
+        if (!theSr.flipX)
+            {
+                hitmap.SendMessage("SetBulletDirectionRight");
+                bulletpre.dir = true;
+            }
+            else
+            {
+                hitmap.SendMessage("SetBulletDirectionLeft");
+                bulletpre.dir = false;
+            }
         
-        //Instantiate(bulletPrefab, slimePoint.position, transform.rotation);
+        
     }
     
 
