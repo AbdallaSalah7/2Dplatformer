@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - stickyWalls
+  - PlatformMechanics
+  - StickyBullet
+  - Wall
+  - Sticky
+  - platform
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - Background
+  - Watertiles
+  - Platform
+  - Player
+  - StickyWall
+  - wallpaper
+  - PlatformMechanics
+  - Bullet
+  - Stickyslime
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: World
+    uniqueID: 3918154693
+    locked: 0
+  - name: Background
+    uniqueID: 3733967147
+    locked: 0
+  - name: wallpaper
+    uniqueID: 2100828887
+    locked: 0
+  - name: platform
+    uniqueID: 3131071195
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Stickywall
+    uniqueID: 2536515373
+    locked: 0
+  - name: Player
+    uniqueID: 3568152835
+    locked: 0
+  - name: Stickyslime
+    uniqueID: 2938610679
+    locked: 0
