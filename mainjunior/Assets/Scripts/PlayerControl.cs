@@ -143,11 +143,13 @@ public class PlayerControl : MonoBehaviour
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
 
+         if(!PauseMenu.isPaused){
          if (Input.GetKeyDown(KeyCode.S)/* && cooldownTimer > attackCooldown*/){
             // Call the Shoot method
             Shoot();
             //cooldownTimer += Time.deltaTime;
             }
+         }
     /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
     }*/
