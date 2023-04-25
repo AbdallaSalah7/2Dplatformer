@@ -45,11 +45,20 @@ public class PlayerControl : MonoBehaviour
     public float KnockBackLength = 0.25f;
     public float KnockBackForce = 5;
     [Header("Jump")]
-    [SerializeField] float jumpForce;
-    public bool canDoubleJump;
+    [SerializeField] float jumpForce = 10f;
+    [SerializeField] float JumpRelease = 2f;
     public bool isWallJumping;
+    public static int PlayerJump = 0;
+    public float LastOnGroundTime;
+    public float LastPressedJumpTime;
 
-    
+    [Header("Dash")]
+    [SerializeField] private float dashingVelocity = 14f;
+    [SerializeField] private float dashingTime = 0.5f;
+    private Vector2 dashingDir;
+    private bool isDashing;
+    private bool canDash = true;
+    private TrailRenderer _trailRenderer;
 
     [Header("Sticky&bullet")]
     //[SerializeField] private float attackCooldown;
@@ -73,6 +82,7 @@ public class PlayerControl : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         theSr = GetComponent<SpriteRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();
     }
     // Update is called once per frame
     void Update()
@@ -86,12 +96,9 @@ public class PlayerControl : MonoBehaviour
                 RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall
                 break;
             }}
-        if (KnockBackCounter <= 0)
+
+        if (KnockBackCounter <= 0)// tf is this
         {
-            if (isGrounded)
-            {
-                canDoubleJump = false;
-            }
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
 
             horizontalInput = Input.GetAxis("Horizontal");
@@ -108,21 +115,48 @@ public class PlayerControl : MonoBehaviour
                 theSr.flipX = false;
             }
             // Jumping
-            if (Input.GetButtonDown("Jump"))
-            {
-                if (isGrounded || canDoubleJump)
+            if (Input.GetButtonDown("Jump") && isGrounded){
+                RB.velocity = new Vector2(RB.velocity.x, jumpForce);
+                PlayerJump++;
+                SwitchingPlatforms.isToggle = false;
+                AltSwitchingPlatforms.isToggle = false;
+                print(PlayerJump);
+                /*if (isGrounded)
                 {
 
                     player.velocity = new Vector2(player.velocity.x, jumpForce);
                     player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, 0f, jumpForce));
+                    PlayerJump = true;
+                    PlayerJump = !PlayerJump;
+                }*/
 
+            }
 
-                    if (!isGrounded && canDoubleJump)
-                    {
-                        canDoubleJump = false;
-                    }
+            if(Input.GetButtonUp("Jump") && RB.velocity.y > 0){
+                RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease);
+            }
+
+            if(Input.GetButtonDown("Dash") && canDash){
+                isDashing = true;
+                canDash = false;
+                _trailRenderer.emitting = true;
+                dashingDir = new Vector2(Input.GetAxisRaw("Horizontal"),0);
+                
+                if(dashingDir == Vector2.zero){
+                    dashingDir = new Vector2(transform.localScale.x, 0);
                 }
+                StartCoroutine(StopDashing());
+            }
 
+            //anim.SetBool("isDashing", isDashing);
+
+            if(isDashing){
+                RB.velocity = dashingDir.normalized * dashingVelocity;
+                return;
+            }
+
+            if(isGrounded){
+                canDash = true;
             }
             wallSlide();
             wallJump();
@@ -150,9 +184,9 @@ public class PlayerControl : MonoBehaviour
             //cooldownTimer += Time.deltaTime;
             }
          }
-    /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
+        /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
-    }*/
+        }*/
     }
     private void FixedUpdate()
     {
@@ -213,6 +247,18 @@ public class PlayerControl : MonoBehaviour
         isWallJumping = false;
     }
 
+    /*private void Jump()
+	{
+		LastPressedJumpTime = 0;
+		LastOnGroundTime = 0;
+
+		float force = jumpForce;
+		if (RB.velocity.y < 0)
+			force -= RB.velocity.y;
+
+		RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
+	}*/
+
     void Shoot()
     {
     	/*Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -254,6 +300,12 @@ public class PlayerControl : MonoBehaviour
 
         
         
+    }
+
+    private IEnumerator StopDashing(){
+        yield return new WaitForSeconds(dashingTime);
+        _trailRenderer.emitting = false;
+        isDashing = false;
     }
     
 
