@@ -39,4 +39,5 @@ public class MovingPlatform : MonoBehaviour
     {
         other.transform.SetParent(null);
     }*/
+
 }
