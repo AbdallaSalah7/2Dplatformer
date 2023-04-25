@@ -237,7 +237,6 @@ public class PlayerControl : MonoBehaviour
         //slimeballs[0].GetComponent<StickyBullet>().SetDirection(Mathf.Sign(transform.localScale.x));
 
         //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
-        Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
 
         if (!theSr.flipX)
             {
@@ -249,6 +248,8 @@ public class PlayerControl : MonoBehaviour
                 hitmap.SendMessage("SetBulletDirectionLeft");
                 bulletpre.dir = false;
             }
+        Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
+
         
         
     }

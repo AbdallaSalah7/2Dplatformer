@@ -7,7 +7,7 @@ public class StickyBullet : MonoBehaviour
     public float lifetime = 2f;
 
     GameObject impactEffect;
-    [SerializeField] private float speed = 4.5f;
+    private float speed = 4.5f;
     public bool dir; // 1true -> right 0 -> left
 
     //private float direction;
@@ -26,13 +26,12 @@ public class StickyBullet : MonoBehaviour
        /* if(hit) return;
         float movementSpeed = speed * Time.deltaTime * direction;
         transform.Translate(movementSpeed, 0, 0);*/
-        transform.position += -transform.right * Time.deltaTime * speed;
+        //transform.position += -transform.right * Time.deltaTime * speed;
 
-        /*if(dir)
+        if(dir)
             transform.position += transform.right * Time.deltaTime * speed;
         else
             transform.position += -transform.right * Time.deltaTime * speed;
-*/
     }
 
     void OnCollisionEnter2D(Collision2D other)
