@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] Transform target;
-    [SerializeField] Transform farBackground, middleBackground;
+    [SerializeField] Transform farBackground;
 
     //To move camera vertically
     //[SerializeField] float minHeight = -1.5f, maxHeight = 2.5f;
@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
         Vector2 amountToMove = new Vector2(transform.position.x - lastPos.x, transform.position.y - lastPos.y);
 
         farBackground.position = farBackground.position + new Vector3(amountToMove.x, amountToMove.y, 0f);
-        middleBackground.position = middleBackground.position + new Vector3(amountToMove.x, amountToMove.y, 0f) * 0.5f;
+        //middleBackground.position = middleBackground.position + new Vector3(amountToMove.x, amountToMove.y, 0f) * 0.5f;
 
         //lastPos = transform.position.x;
         lastPos = transform.position;
