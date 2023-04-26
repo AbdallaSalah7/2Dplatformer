@@ -26,7 +26,7 @@ TagManager:
   - PlatformMechanics
   - Bullet
   - Stickyslime
-  - 
+  - Extras
   - 
   - 
   - 
@@ -52,6 +52,9 @@ TagManager:
     locked: 0
   - name: wallpaper
     uniqueID: 2100828887
+    locked: 0
+  - name: Extras
+    uniqueID: 3836930737
     locked: 0
   - name: platform
     uniqueID: 3131071195
