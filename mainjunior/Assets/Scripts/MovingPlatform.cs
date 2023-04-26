@@ -31,13 +31,13 @@ public class MovingPlatform : MonoBehaviour
 
     }
     //to make player stick to moving platform
-    /*private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         other.transform.SetParent(transform);
     }
     private void OnCollisionExit2D(Collision2D other)
     {
         other.transform.SetParent(null);
-    }*/
+    }
 
 }

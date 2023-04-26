@@ -103,7 +103,10 @@ public class PlayerControl : MonoBehaviour
 
             horizontalInput = Input.GetAxis("Horizontal");
 
-            player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
+            print("hI: " + horizontalInput + " x: " + RB.velocity.x);
+
+            //if(Mathf.Abs(horizontalInput) > Mathf.Epsilon)
+                player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
 
             // Flip player sprite depending on direction
             if (player.velocity.x < 0)
@@ -296,7 +299,7 @@ public class PlayerControl : MonoBehaviour
                 hitmap.SendMessage("SetBulletDirectionLeft");
                 bulletpre.dir = false;
             }
-        Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
+        Instantiate(bulletpre, new Vector2(LaunchOffset.position.x + RB.velocity.x, LaunchOffset.position.y)/* + rotatedOffset*/, transform.rotation);
 
         
         
