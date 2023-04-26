@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class PlatformMoving : MonoBehaviour
 {
+    public static PlatformMoving instance;
+    public GameObject player;
     public Transform[] wayPoints;
     public float speed;
     public float minDistance = 0.001f;
     private int _currentWayPointIndex;
+    private void Awake() {
+        instance= this;
+    }
 
     private void MovePlatform()
     {
@@ -16,23 +21,28 @@ public class PlatformMoving : MonoBehaviour
         transform.position = Vector3.MoveTowards(current: transform.position, target, maxDistanceDelta: speed * Time.deltaTime);
         if (Vector3.SqrMagnitude(vector: target - transform.position) < minDistance * minDistance)
         {
-            _currentWayPointIndex =(_currentWayPointIndex + 1)%wayPoints.Length ;
+            _currentWayPointIndex = (_currentWayPointIndex + 1) % wayPoints.Length;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        //print(RenderBuffer-.Velocity.x);
         MovePlatform();
     }
-    private void OnTriggerEnter2D(Collider2D other) {
-        if(other.gameObject.CompareTag("Player")){
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
             other.transform.SetParent(gameObject.transform);
         }
     }
-    private void OnTriggerExit2D(Collider2D other) {
-        if(other.gameObject.CompareTag("Player")){
-            other.transform.SetParent(p:null);
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            other.transform.SetParent(p: null);
         }
     }
 }
