@@ -37,13 +37,15 @@ public class StickyWall : MonoBehaviour
         
         
     }
-    public void OnTriggerEnter2D(Collider2D other) {
+    public void OnTriggerStay2D(Collider2D other) {
         if (other.gameObject.CompareTag("Player")){
             print("enter");
+
             if(Input.GetButtonDown("Jump")){
                 SendMessage("GiveJump", 1);
                 print("test");
             }
+
         }
     }
     public void DrawLeftTile(Vector3Int location){
@@ -55,7 +57,7 @@ public class StickyWall : MonoBehaviour
 
     void MakeUnsticky()
     {
-        stickyMap.SetTile(new Vector3Int(0,0,0), null);
+        stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
         isSticky = false;
     }
 }

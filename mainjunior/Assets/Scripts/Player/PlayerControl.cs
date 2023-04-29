@@ -21,6 +21,8 @@ public class PlayerControl : MonoBehaviour
     //private float wallJumpingCounter;
     //private float wallJumpingDuration = 0.4f;
     //private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+
+    //GiveJump
     public Rigidbody2D player;
     bool isGrounded;
     
@@ -374,11 +376,12 @@ public class PlayerControl : MonoBehaviour
                 bulletpre.dir = false;
             }
         Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
-
-        
         
     }
 
+    public void GiveJump(){
+
+    }
     private IEnumerator StopDashing(){
         yield return new WaitForSeconds(dashingTime);
         _trailRenderer.emitting = false;
