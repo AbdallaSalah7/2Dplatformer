@@ -35,6 +35,16 @@ public class StickyWall : MonoBehaviour
         isSticky = true;
         Invoke("MakeUnsticky", stickTime);
         
+        
+    }
+    public void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.CompareTag("Player")){
+            print("enter");
+            if(Input.GetButtonDown("Jump")){
+                SendMessage("GiveJump", 1);
+                print("test");
+            }
+        }
     }
     public void DrawLeftTile(Vector3Int location){
 

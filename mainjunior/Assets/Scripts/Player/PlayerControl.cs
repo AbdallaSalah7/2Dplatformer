@@ -107,7 +107,7 @@ public class PlayerControl : MonoBehaviour
                 break;
             }}
 
-        if (KnockBackCounter <= 0)// tf is this
+        if (KnockBackCounter <= 0)
         {
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
 
@@ -206,7 +206,7 @@ public class PlayerControl : MonoBehaviour
         anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
 
          if(!PauseMenu.isPaused){
-         if (Input.GetKeyDown(KeyCode.S)/* && cooldownTimer > attackCooldown*/){
+         if (Input.GetButtonDown("Shoot")/* && cooldownTimer > attackCooldown*/){
             // Call the Shoot method
             Shoot();
             //cooldownTimer += Time.deltaTime;
