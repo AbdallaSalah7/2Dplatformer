@@ -8,7 +8,7 @@ public class PlayerControl : MonoBehaviour
     public Rigidbody2D RB;
     public static PlayerControl instance;
     private float horizontalInput;
-    [SerializeField] float moveSpeed = 10f;
+    //[SerializeField] float moveSpeed = 10f;
     //private bool isFacingRight = true;
     //wall sliding
     //private bool isWallSliding;
@@ -26,7 +26,7 @@ public class PlayerControl : MonoBehaviour
     
     
     private float wallJumpCoolDown;
-    bool movingSpeed = false;
+    //bool movingSpeed = false;
     PlatformMoving platform;
     
     public Transform groundCheckPoint;
@@ -37,7 +37,20 @@ public class PlayerControl : MonoBehaviour
     private SpriteRenderer theSr;
 
     
-    
+    //------------------------------------CHECK VARIABLES------------------------------------------------
+    //bool variables for checks if a certain action is possible 
+    public bool IsFacingRight { get; private set; }
+    public bool IsRunning { get; private set; }
+
+    //----------------------------------TIMERS------------------------------------------------
+    //used for coyote time check. It is set to coyote time when player is grounded, otherwise when jumping or in air it starts countdown by Time.deltaTime each frame
+    public float LastOnGroundTime { get; private set; }
+
+    //----------------------------------------ASSISTS------------------------------------------------
+    [Header("Assists")]
+	[Range(0.01f, 0.5f)] public float coyoteTime = 0.2f; //Grace period after falling off a platform, where you can still jump
+	[Range(0.01f, 0.5f)] public float jumpInputBufferTime = 0.2f; //Grace period after pressing jump where a jump will be automatically performed once the requirements (eg. being grounded) are met.
+
     private float KnockBackCounter;
 
     [Header("Layers & Tags")]
@@ -49,6 +62,16 @@ public class PlayerControl : MonoBehaviour
     [Header("Knockback")]
     public float KnockBackLength = 0.25f;
     public float KnockBackForce = 5;
+    [Header("run")]
+    public float runMaxSpeed = 4.5f;
+    [HideInInspector] public float runAccelAmount;
+    public float runAcceleration = 4.5f;
+    [HideInInspector] public float runDeccelAmount;
+    public float runDecceleration = 4.5f;
+    [Range(0f, 1)] public float accelInAir = 1f;
+    [Range(0f, 1)] public float deccelInAir = 1f;
+	public bool doConserveMomentum = true;
+    private Vector2 _moveInput;
     [Header("Jump")]
     [SerializeField] float jumpForce = 10f;
     [SerializeField] float JumpRelease = 2f;
@@ -82,21 +105,32 @@ public class PlayerControl : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     {
-        instance = this;
-        AudioManager.instance.playSFX(5);
-        boxCollider = GetComponent<BoxCollider2D>();
-        //platform = GetComponent<PlatformMoving>();
-    }
-    void Start()
-    {
         RB = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         theSr = GetComponent<SpriteRenderer>();
         _trailRenderer = GetComponent<TrailRenderer>();
+        instance = this;
+        AudioManager.instance.playSFX(5);
+        boxCollider = GetComponent<BoxCollider2D>();
+        //platform = GetComponent<PlatformMoving>();
+        
+    }
+    void Start()
+    {
+        IsFacingRight = true;
+        runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
+        runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
+        runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
+		runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
     }
     // Update is called once per frame
     void Update()
     {
+        LastOnGroundTime -= Time.deltaTime;
+        _moveInput.x = Input.GetAxisRaw("Horizontal");
+
+        
+        //--------------------------------------------------------STICKY-------------------------------------------------------------
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1,1),0, stickyWallLayer);
         foreach (Collider2D collider in colliders)
         {
@@ -107,23 +141,34 @@ public class PlayerControl : MonoBehaviour
                 break;
             }}
 
+            
+
+
         if (KnockBackCounter <= 0)
         {
+            if (_moveInput.x != 0) {  //If moving left or right
+
+			CheckDirectionToFace(_moveInput.x > 0);
+            
+            }
+
+
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
 
-            horizontalInput = Input.GetAxis("Horizontal");
+            //horizontalInput = Input.GetAxis("Horizontal");
 
-            player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
+            //player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
 
             // Flip player sprite depending on direction
-            if (player.velocity.x < 0)
+            /* if (player.velocity.x < 0)
             {
-                theSr.flipX = true;
+                
+                theSr.flipX = true;  //negative -> left
             }
             else if (player.velocity.x > 0)
             {
                 theSr.flipX = false;
-            }
+            } */
             // Jumping
             if (Input.GetButtonDown("Jump") && isGrounded){
                 RB.velocity = new Vector2(RB.velocity.x, jumpForce);
@@ -193,7 +238,10 @@ public class PlayerControl : MonoBehaviour
         else
         {
             KnockBackCounter -= Time.deltaTime;
-            if (!theSr.flipX)
+
+
+            //if (!theSr.flipX)
+            if (IsFacingRight)
             {
                 player.velocity = new Vector2(-KnockBackForce, player.velocity.y);
             }
@@ -218,10 +266,11 @@ public class PlayerControl : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        if (!isWallJumping)
+        /*if (!isWallJumping)
         {
             player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
-        }
+        }*/
+        Run(1);
     }
     public void KnockBack()
     {
@@ -314,7 +363,7 @@ public class PlayerControl : MonoBehaviour
 
         //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
 
-        if (!theSr.flipX)
+        if (IsFacingRight) 
             {
                 hitmap.SendMessage("SetBulletDirectionRight");
                 bulletpre.dir = true;
@@ -335,6 +384,42 @@ public class PlayerControl : MonoBehaviour
         _trailRenderer.emitting = false;
         isDashing = false;
     }
+
+    private void Run(float lerpAmount){
+        float targetSpeed = _moveInput.x * runMaxSpeed;
+        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
+
+        float accelRate;
+        
+        if(LastOnGroundTime > 0){
+            accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount : runDeccelAmount;
+        }
+        else{
+			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount * accelInAir : runDeccelAmount * deccelInAir;
+        }
+
+        if(doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
+		{
+			accelRate = 0; 
+		}
+
+        float speedDif = targetSpeed - RB.velocity.x;
+		float movement = speedDif * accelRate;
+		RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+    }
+
+    public void CheckDirectionToFace(bool isMovingRight)
+	{
+		if (isMovingRight != IsFacingRight){
+
+            //stores scale and flips the player along the x axis, 
+		    Vector3 scale = transform.localScale; 
+		    scale.x *= -1;
+		    transform.localScale = scale; //this flips the bakka sprite 
+
+		    IsFacingRight = !IsFacingRight;
+        }
+	}
 
     private bool onWall()
     {
