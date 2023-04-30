@@ -42,7 +42,7 @@ public class StickyWall : MonoBehaviour
             print("enter");
 
             if(Input.GetButtonDown("Jump")){
-                SendMessage("GiveJump", 1);
+                other.gameObject.SendMessage("GiveJump");
                 print("test");
             }
 
@@ -57,7 +57,7 @@ public class StickyWall : MonoBehaviour
 
     void MakeUnsticky()
     {
-        stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
+        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
         isSticky = false;
     }
 }

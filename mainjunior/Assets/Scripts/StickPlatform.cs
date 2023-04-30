@@ -49,7 +49,7 @@ public class StickPlatform : MonoBehaviour
 
             if(rightHit){
 
-               location = targetTilemap.WorldToCell(new Vector3(point.x+1, point.y, point.z));
+               location = targetTilemap.WorldToCell(new Vector3(point.x, point.y, point.z));
                stickyTilemap.SendMessage("DrawRightTile", location);
 
                print("hit right");
@@ -61,22 +61,6 @@ public class StickPlatform : MonoBehaviour
                stickyTilemap.SendMessage("DrawLeftTile", location);
 
                print("hit left");
-
-            }
-            else if(topHit){
-
-               location = targetTilemap.WorldToCell(new Vector3(point.x, point.y+1, point.z)); 
-               stickyTilemap.SendMessage(null, location);
-
-               print("hit top");
-
-            }
-            else if(bottomHit){
-
-               location = targetTilemap.WorldToCell(new Vector3(point.x, point.y-1, point.z)); 
-               stickyTilemap.SendMessage(null, location);
-
-               print("hit top");
 
             }
 
@@ -103,25 +87,6 @@ public class StickPlatform : MonoBehaviour
         topHit = false;
         bottomHit = false;
     }
-
-    public void SetBulletDirectionTop(){
-
-        leftHit = false;
-        rightHit = false;
-        topHit = true;
-        bottomHit = false;
-    }
-
-    public void SetBulletDirectionBottom(){
-
-        leftHit = false;
-        rightHit = false;
-        topHit = false;
-        bottomHit = true;
-    }
-
-
-
 }
 
 

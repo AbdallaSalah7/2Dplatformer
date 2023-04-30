@@ -89,6 +89,7 @@ public class PlayerControl : MonoBehaviour
     private bool isDashing;
     private bool canDash = true;
     private TrailRenderer _trailRenderer;
+    private bool isStickjump;
 
     [Header("Sticky&bullet")]
     //[SerializeField] private float attackCooldown;
@@ -102,6 +103,10 @@ public class PlayerControl : MonoBehaviour
     public Transform LaunchOffset;
 
     private BoxCollider2D boxCollider;
+    private Vector2 stickjump;
+    public bool outOfStickJump = true;
+    [SerializeField] private float stickjumpVelocity = 14f;
+
 
     
     // Start is called before the first frame update
@@ -140,7 +145,7 @@ public class PlayerControl : MonoBehaviour
             if (stickyWall != null && stickyWall.isSticky)
             {
                 RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall
-                break;
+                    break;
             }}
 
             
@@ -252,8 +257,8 @@ public class PlayerControl : MonoBehaviour
                 player.velocity = new Vector2(KnockBackForce, player.velocity.y);
             }
         }
-        anim.SetBool("isGrounded", isGrounded);
-        anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
+            anim.SetBool("isGrounded", isGrounded);
+            anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
 
          if(!PauseMenu.isPaused){
          if (Input.GetButtonDown("Shoot")/* && cooldownTimer > attackCooldown*/){
@@ -262,6 +267,11 @@ public class PlayerControl : MonoBehaviour
             //cooldownTimer += Time.deltaTime;
             }
          }
+         if(isStickjump){
+
+            RB.velocity = stickjump.normalized * stickjumpVelocity;
+            return;
+        }
         /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
         }*/
@@ -380,8 +390,22 @@ public class PlayerControl : MonoBehaviour
     }
 
     public void GiveJump(){
-
+        print("sent");
+        //stickyWall.isSticky = false;
+        isStickjump = true;
+        stickjump = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        
+        
+        isStickjump = false;
     }
+
+
+    /* public bool CanJumpFromSticky(){
+
+        return isSticking=
+    } */
+
+
     private IEnumerator StopDashing(){
         yield return new WaitForSeconds(dashingTime);
         _trailRenderer.emitting = false;
@@ -455,6 +479,7 @@ public class PlayerControl : MonoBehaviour
     private void OnCollisionExit2D(Collision2D other)
     {
         
+
     }
     
 
