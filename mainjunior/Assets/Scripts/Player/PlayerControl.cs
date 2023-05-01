@@ -16,11 +16,11 @@ public class PlayerControl : MonoBehaviour
     //wall jumping
     //private float _wallJumpStartTime;
 	//private int _lastWallJumpDir;
-    //private float wallJumpingDirection;
-    //private float WallJumpingTime = 0.2f;
-    //private float wallJumpingCounter;
-    //private float wallJumpingDuration = 0.4f;
-    //private Vector2 wallJumpingPower = new Vector2(8f, 16f);
+    private float wallJumpingDirection;
+    private float WallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
     //GiveJump
     public Rigidbody2D player;
@@ -398,6 +398,15 @@ public class PlayerControl : MonoBehaviour
         
         isStickjump = false;
     }
+    private bool isSlimeWalled(){
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    private void SlimeWallJump(){
+        
+    }
+
+
 
 
     /* public bool CanJumpFromSticky(){
