@@ -5,9 +5,8 @@ using UnityEngine;
 public class StickyBullet : MonoBehaviour
 {
     public float lifetime = 2f;
-
     GameObject impactEffect;
-    private float speed = 4.5f;
+    private float speed = 11f;
     public bool dir; // 1true -> right 0 -> left
 
     //private float direction;

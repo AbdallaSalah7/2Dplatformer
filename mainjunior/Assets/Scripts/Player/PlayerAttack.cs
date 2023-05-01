@@ -8,15 +8,15 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float AttackCoolDown;
      [SerializeField] private Transform pencilPoint;
      [SerializeField] private GameObject[] pencils;
-    //private PlayerControl playerControl;
+    public PlayerControl playerControl;
     private float cooldownTimer = Mathf.Infinity;
     private void Awake()
     {
-        //playerControl = GetComponent<PlayerControl>();
+        playerControl = GetComponent<PlayerControl>();
     }
     private void Update()
     {
-        if (Input.GetMouseButton(0) && cooldownTimer > AttackCoolDown && PlayerControl.instance.canAttack())
+        if (Input.GetMouseButton(0) && cooldownTimer > AttackCoolDown && playerControl.canAttack())
         {
             Attack();
         }
@@ -27,8 +27,8 @@ public class PlayerAttack : MonoBehaviour
     {
         cooldownTimer = 0;
 
-        pencils[FindPencils()].transform.position = pencilPoint.position;
-        pencils[FindPencils()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
+        //pencils[FindPencils()].transform.position = pencilPoint.position;
+        //pencils[FindPencils()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
     }
     private int FindPencils()
     {

@@ -5,8 +5,8 @@ using UnityEngine.Tilemaps;
 
 public class StickyWall : MonoBehaviour
 {
-
-    public bool isSticky = false;
+    //its here 
+    public bool isSticky = false; //want meeting? u free? yea ? ok if u want no if you want yea tmam wait wait phone call take your time 
     //public Sprite stickySprite;
     public float stickTime = 2f;
     private Tilemap stickyMap;
@@ -14,6 +14,9 @@ public class StickyWall : MonoBehaviour
     public Tile stickyTileLeft;
     public bool DrawRight {get; private set;}
     public bool DrawLeft {get; private set;}    
+    public Tile[] stickyTiles;
+    public Vector3Int loc;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,8 +36,8 @@ public class StickyWall : MonoBehaviour
         stickyMap.SetTile(location, stickyTileRight);
         print("hit msg");
         isSticky = true;
-        Invoke("MakeUnsticky", stickTime);
-        
+        //Invoke("MakeUnsticky", stickTime);
+        StartCoroutine(removeTile(location));
         
     }
     public void OnTriggerStay2D(Collider2D other) {
@@ -42,8 +45,10 @@ public class StickyWall : MonoBehaviour
             print("enter");
 
             if(Input.GetButtonDown("Jump")){
+                isSticky = false;
                 other.gameObject.SendMessage("GiveJump");
                 print("test");
+                
             }
 
         }
@@ -52,14 +57,26 @@ public class StickyWall : MonoBehaviour
 
         stickyMap.SetTile(location, stickyTileLeft);
         isSticky = true;
-        Invoke("MakeUnsticky", stickTime);
+        //Invoke("MakeUnsticky", stickTime);
+        StartCoroutine(removeTile(location));
     }
 
-    void MakeUnsticky()
+    IEnumerator removeTile(Vector3Int location)
     {
         //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
+        yield return new WaitForSeconds(stickTime);
+        stickyMap.SetTile(location, null);
         isSticky = false;
     }
+
+    /* void MakeUnsticky(Vector3Int location)
+    {
+        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
+        stickyMap.SetTile(location, null);
+        isSticky = false;
+    } */
 }
+
+//ok so i thought what if we do an array just like the one that checks is player is stuck in sticky but of type tile tmam, then idk where is the timer of the sticky but basically removed that and each tile we draw add to array then after some time remove from array and delete hmmm 
 
 

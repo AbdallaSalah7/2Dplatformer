@@ -16,11 +16,6 @@ public class PlayerControl : MonoBehaviour
     //wall jumping
     //private float _wallJumpStartTime;
 	//private int _lastWallJumpDir;
-    private float wallJumpingDirection;
-    private float WallJumpingTime = 0.2f;
-    private float wallJumpingCounter;
-    private float wallJumpingDuration = 0.4f;
-    private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
     //GiveJump
     public Rigidbody2D player;
@@ -29,7 +24,7 @@ public class PlayerControl : MonoBehaviour
     
     private float wallJumpCoolDown;
     //bool movingSpeed = false;
-    PlatformMoving platform;
+    public MovingPlatform MovePlatform;
     
     public Transform groundCheckPoint;
     //public Transform stickyCheckPoint;
@@ -64,6 +59,8 @@ public class PlayerControl : MonoBehaviour
     [Header("Knockback")]
     public float KnockBackLength = 0.25f;
     public float KnockBackForce = 5;
+
+
     [Header("run")]
     public float runMaxSpeed = 4.5f;
     [HideInInspector] public float runAccelAmount;
@@ -74,13 +71,31 @@ public class PlayerControl : MonoBehaviour
     [Range(0f, 1)] public float deccelInAir = 1f;
 	public bool doConserveMomentum = true;
     private Vector2 _moveInput;
+
+
+
     [Header("Jump")]
     [SerializeField] float jumpForce = 10f;
     [SerializeField] float JumpRelease = 2f;
     public bool isWallJumping;
+    private float wallJumpingDirection;
+    private float WallJumpingTime = 0.2f;
+    private float wallJumpingCounter;
+    private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(4f, 8f);
     public static int PlayerJump = 0;
     //public float LastOnGroundTime;
     //public float LastPressedJumpTime;
+
+
+
+    [Header("Wall Slide")]
+    [SerializeField] Transform wallPoint;
+    [SerializeField] LayerMask slideWall;
+    public bool isWallSliding;
+    public float wallSlidingSpeed = 2f;
+
+
 
     [Header("Dash")]
     [SerializeField] private float dashingVelocity = 14f;
@@ -100,6 +115,7 @@ public class PlayerControl : MonoBehaviour
     //public GameObject bulletPrefab;
     public Tilemap hitmap;
     public StickyBullet bulletpre;
+    public StickyWall _stickywall; 
     public Transform LaunchOffset;
 
     private BoxCollider2D boxCollider;
@@ -138,15 +154,16 @@ public class PlayerControl : MonoBehaviour
 
         
         //--------------------------------------------------------STICKY-------------------------------------------------------------
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1,1),0, stickyWallLayer);
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1,1),0, stickyWallLayer); //we try to make bigger collider? or smoller idk
         foreach (Collider2D collider in colliders)
         {
             StickyWall stickyWall = collider.GetComponent<StickyWall>();
             if (stickyWall != null && stickyWall.isSticky)
             {
-                RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall
+                //_moveInput.x = 0;
+                RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall it
                     break;
-            }}
+            }} // eyo my love
 
             
 
@@ -164,7 +181,7 @@ public class PlayerControl : MonoBehaviour
 
             //horizontalInput = Input.GetAxis("Horizontal");
 
-            //player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
+            //player.velocity = new Vector2(5f * _moveInput.x, player.velocity.y);
 
             // Flip player sprite depending on direction
             /* if (player.velocity.x < 0)
@@ -176,29 +193,14 @@ public class PlayerControl : MonoBehaviour
             {
                 theSr.flipX = false;
             } */
-            // Jumping
-            if (Input.GetButtonDown("Jump") && isGrounded){
-                RB.velocity = new Vector2(RB.velocity.x, jumpForce);
-                PlayerJump++;
-                SwitchingPlatforms.isToggle = false;
-                AltSwitchingPlatforms.isToggle = false;
-                print(PlayerJump);
-                /*if (isGrounded)
-                {
 
-                    player.velocity = new Vector2(player.velocity.x, jumpForce);
-                    player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, 0f, jumpForce));
-                    PlayerJump = true;
-                    PlayerJump = !PlayerJump;
-                }*/
+            Jump();
+            SlimeWallSlide();
+            WallJump();
 
-            }
 
-            if(Input.GetButtonUp("Jump") && RB.velocity.y > 0){
-                RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease);
-            }
 
-            if(Input.GetButtonDown("Dash") && canDash){
+            if(Input.GetButtonDown("Dash") && canDash){ 
                 isDashing = true;
                 canDash = false;
                 _trailRenderer.emitting = true;
@@ -276,14 +278,27 @@ public class PlayerControl : MonoBehaviour
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
         }*/
     }
+
+
+
+
     private void FixedUpdate()
     {
-        /*if (!isWallJumping)
+        /* if (!isWallJumping)
         {
-            player.velocity = new Vector2(moveSpeed * horizontalInput, player.velocity.y);
-        }*/
-        Run(1);
+            player.velocity = new Vector2(6f * _moveInput.x, player.velocity.y);
+        } */
+
+        if(!isWallJumping){
+
+            Run(1);
+        }
+        
     }
+
+
+
+
     public void KnockBack()
     {
         KnockBackCounter = KnockBackLength;
@@ -291,6 +306,36 @@ public class PlayerControl : MonoBehaviour
         anim.SetTrigger("hurt");
         AudioManager.instance.playSFX(1);
     }
+
+
+
+    public void Jump(){
+
+        // Jumping
+            if (Input.GetButtonDown("Jump") && isGrounded){
+                RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
+                PlayerJump++;
+                SwitchingPlatforms.isToggle = false;
+                AltSwitchingPlatforms.isToggle = false;
+                print(PlayerJump);
+                /*if (isGrounded)
+                {
+
+                    player.velocity = new Vector2(player.velocity.x, jumpForce);
+                    player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, 0f, jumpForce));
+                    PlayerJump = true;
+                    PlayerJump = !PlayerJump;
+                }*/
+
+            }
+
+            if(Input.GetButtonUp("Jump") && RB.velocity.y > 0){
+                RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease);
+            }
+    }
+
+
+
    /* private bool isWalled()
     {
         return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
@@ -307,7 +352,7 @@ public class PlayerControl : MonoBehaviour
             isWallSliding = false;
         }
     }*/
-    /*private void wallJump()
+    private void WallJump()
     {
         if (isWallSliding)
         {
@@ -320,13 +365,22 @@ public class PlayerControl : MonoBehaviour
         else
         {
             wallJumpingCounter -= Time.deltaTime;
+            isWallJumping = false;
         }
 
         if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
         {
             isWallJumping = true;
             player.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            wallJumpingCounter = 0f;
 
+            if(transform.localScale.x != wallJumpingDirection){
+
+                IsFacingRight = !IsFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
 
             Invoke(nameof(stopWallJumping), wallJumpingDuration);
         }
@@ -334,7 +388,7 @@ public class PlayerControl : MonoBehaviour
     private void stopWallJumping()
     {
         isWallJumping = false;
-    }*/
+    }
 
     /*private void Jump()
 	{
@@ -375,6 +429,7 @@ public class PlayerControl : MonoBehaviour
 
         //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
 
+
         if (IsFacingRight) 
             {
                 hitmap.SendMessage("SetBulletDirectionRight");
@@ -391,19 +446,34 @@ public class PlayerControl : MonoBehaviour
 
     public void GiveJump(){
         print("sent");
-        //stickyWall.isSticky = false;
+        Jump();
         isStickjump = true;
         stickjump = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         
-        
         isStickjump = false;
     }
+
+
+
     private bool isSlimeWalled(){
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+
+        return Physics2D.OverlapCircle(wallPoint.position, 0.2f, wallLayer);
     }
 
-    private void SlimeWallJump(){
-        
+
+
+    private void SlimeWallSlide(){
+        if(isSlimeWalled() && !isGrounded && _moveInput.x != 0f){
+
+            isWallSliding = true;
+            player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else{
+
+            isWallSliding = false;
+        }
+
+        //print("wallslide now " + isWallSliding + " " + isWallJumping);
     }
 
 
@@ -420,6 +490,7 @@ public class PlayerControl : MonoBehaviour
         _trailRenderer.emitting = false;
         isDashing = false;
     }
+
 
     private void Run(float lerpAmount){
         float targetSpeed = _moveInput.x * runMaxSpeed;
@@ -444,14 +515,16 @@ public class PlayerControl : MonoBehaviour
 		RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
     }
 
+
+
     public void CheckDirectionToFace(bool isMovingRight)
 	{
-		if (isMovingRight != IsFacingRight){
+		if (isMovingRight != IsFacingRight && !isWallJumping){
 
             //stores scale and flips the player along the x axis, 
 		    Vector3 scale = transform.localScale; 
 		    scale.x *= -1;
-		    transform.localScale = scale; //this flips the bakka sprite 
+		    transform.localScale = scale; //this flips the bakka sprite
 
 		    IsFacingRight = !IsFacingRight;
         }
@@ -473,15 +546,25 @@ public class PlayerControl : MonoBehaviour
         return raycastHit.collider != null;
     }*/
 
+
+
+
+
+
+
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("PlatformMechanics"))
         {
-            print("initial velocity "+player.velocity.x );
-            print("");
-            player.velocity = new Vector2( (player.velocity.x + PlatformMoving.instance.speed), 0);
-            print("Velocity after adding "+player.velocity.x);
-            print(player.velocity.x + " " +PlatformMoving.instance.speed );
+            //print("initial velocity "+player.velocity.x );
+            //print("");
+            //if(_moveInput.x != 0)
+            //    player.velocity = new Vector2( (player.velocity.x + MovePlatform.moveSpeed), 0);
+
+            //player.velocity = new Vector2( (player.velocity.x + PlatformMoving.instance.speed), 0);
+
+            //print("Velocity after adding "+player.velocity.x);
+            //print(player.velocity.x + " " +PlatformMoving.instance.speed );
           
         }
     }
