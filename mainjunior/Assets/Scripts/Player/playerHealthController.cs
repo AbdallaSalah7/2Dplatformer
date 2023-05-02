@@ -11,7 +11,7 @@ public class playerHealthController : MonoBehaviour
     public float invincibleLength = 1;
     private float invincibleCount;
     public int currentHealth;
-    public int maxHealth = 6;
+    public int maxHealth = 1;
     private SpriteRenderer theSr;
     public GameObject deathEffect;
 
@@ -23,7 +23,7 @@ public class playerHealthController : MonoBehaviour
     }
     void Start()
     {
-        currentHealth = maxHealth;
+        currentHealth = 1;
         theSr = GetComponent<SpriteRenderer>();
     }
 
@@ -47,20 +47,20 @@ public class playerHealthController : MonoBehaviour
         {
             currentHealth--;
 
-            if (currentHealth <= 0)
-            {
+            //if (currentHealth <= 0)
+            //{
                 currentHealth = 0;
                 Instantiate(deathEffect,transform.position,transform.rotation);
                 //gameObject.SetActive(false);
                 levelManager.instance.RespawnPlayer();
-            }
-            else
+            //}
+            /* else
             {
                 invincibleCount = invincibleLength;
                 theSr.color = new Color(theSr.color.r, theSr.color.g, theSr.color.b, 0.5f);
                 PlayerControl.instance.KnockBack();
-            }
-            UIController.instance.updateHealthDisplay();
+            } */
+            //UIController.instance.updateHealthDisplay();
         }
     }
 
