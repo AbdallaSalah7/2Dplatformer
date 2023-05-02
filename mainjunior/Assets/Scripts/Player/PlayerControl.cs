@@ -308,13 +308,13 @@ public class PlayerControl : MonoBehaviour
 
                 LastOnGroundTime = 0;
 
-                //RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
+                RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
                 //RB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
 
-                if (RB.velocity.y < 0)
+                /* if (RB.velocity.y < 0)
 			        jumpForce -= RB.velocity.y;
 
-		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); */
 
                 PlayerJump++;
                 SwitchingPlatforms.isToggle = false;
