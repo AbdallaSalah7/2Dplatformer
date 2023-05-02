@@ -35,7 +35,14 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         hit = true;
-        boxCollider.enabled = false;
+
+
+        if (other.tag == "Enemy")
+        {
+            boxCollider.enabled = false;
+            gameObject.SetActive(false);
+            other.GetComponent<Health>().TakeDamage(1);
+        }
     }
     public void SetDirection(float _direction)
     {

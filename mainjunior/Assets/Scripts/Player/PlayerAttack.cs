@@ -27,8 +27,8 @@ public class PlayerAttack : MonoBehaviour
     {
         cooldownTimer = 0;
 
-        //pencils[FindPencils()].transform.position = pencilPoint.position;
-        //pencils[FindPencils()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
+        pencils[FindPencils()].transform.position = pencilPoint.position;
+        pencils[FindPencils()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
     }
     private int FindPencils()
     {

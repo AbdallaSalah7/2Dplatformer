@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - Sticky
   - platform
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - Bullet
   - Stickyslime
   - Extras
-  - 
+  - Enemy
   - 
   - 
   - 

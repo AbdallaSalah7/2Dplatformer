@@ -38,7 +38,7 @@ public class levelManager : MonoBehaviour
         //set the player position to the stored spawn position
         PlayerControl.instance.transform.position = checkPointController.instance.spawnPoint;
 
-        playerHealthController.instance.currentHealth = playerHealthController.instance.maxHealth;
-        UIController.instance.updateHealthDisplay();
+        //playerHealthController.instance.currentHealth = playerHealthController.instance.maxHealth;
+        //UIController.instance.updateHealthDisplay();
     }
 }
