@@ -163,7 +163,7 @@ public class PlayerControl : MonoBehaviour
                 //_moveInput.x = 0;
                 RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall it
                     break;
-            }} // eyo my love
+            }}
 
             
 

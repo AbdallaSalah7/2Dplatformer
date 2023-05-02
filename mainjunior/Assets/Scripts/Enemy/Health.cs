@@ -20,7 +20,7 @@ public class Health : MonoBehaviour
     }
     public void TakeDamage(float _damage)
     {
-        currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth);
+        currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth); 
 
         if (currentHealth > 0)
         {
@@ -38,10 +38,10 @@ public class Health : MonoBehaviour
                     GetComponentInParent<EnemyPatrol>().enabled = false;
                 }
 
-                if (GetComponentInParent<EnemyPatrol>() != null)
+                /* if (GetComponentInParent<SecurityEnemy>() != null)
                 {
                     GetComponent<SecurityEnemy>().enabled = false;
-                }
+                } */
                 dead = true;
             }
             if (dead)

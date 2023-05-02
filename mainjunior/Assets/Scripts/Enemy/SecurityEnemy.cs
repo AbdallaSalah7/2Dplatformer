@@ -19,6 +19,7 @@ public class SecurityEnemy : MonoBehaviour
     public GameObject player;
     private Animator anim;
     private EnemyPatrol enemypatrol;
+    private bool canmove = true;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -35,10 +36,15 @@ public class SecurityEnemy : MonoBehaviour
     {
         if (Health.instance.dead == true)
         {
+            print("dead");
             boxcollider.enabled = false;
+            canmove = false;
+             
         }
         cooldownTimer += Time.deltaTime;
-        if (PlayerInsight())
+
+        if(canmove){
+            if (PlayerInsight())
         {
             if (cooldownTimer >= attackCooldown)
             {
@@ -52,16 +58,21 @@ public class SecurityEnemy : MonoBehaviour
         {
             enemypatrol.enabled = !PlayerInsight();
         }
-
+        }
 
     }
+
+    
     private bool PlayerInsight()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxcollider.bounds.center + transform.right * range * transform.localScale.x * colliderDistance,
         new Vector3(boxcollider.bounds.size.x * range, boxcollider.bounds.size.y, boxcollider.bounds.size.z)
         , 0, Vector2.left, 0, playerLayer);
+        
         return hit.collider != null;
     }
+
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -69,7 +80,9 @@ public class SecurityEnemy : MonoBehaviour
         new Vector3(boxcollider.bounds.size.x * range, boxcollider.bounds.size.y, boxcollider.bounds.size.z));
 
     }
-    private void OnTriggerEnter2D(Collider2D other)
+
+
+    private void OnTriggerEnter2D(Collider2D other) 
     {
         if (other.gameObject.tag == "Player")
         {
