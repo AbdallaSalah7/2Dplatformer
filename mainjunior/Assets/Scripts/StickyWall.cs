@@ -77,6 +77,5 @@ public class StickyWall : MonoBehaviour
     } */
 }
 
-//ok so i thought what if we do an array just like the one that checks is player is stuck in sticky but of type tile tmam, then idk where is the timer of the sticky but basically removed that and each tile we draw add to array then after some time remove from array and delete hmmm 
 
 

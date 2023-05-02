@@ -66,14 +66,21 @@ public class EnemyPatrol : MonoBehaviour
         }
 
     }
+
+
+
     private void directionChange()
     {
         anim.SetBool("moving", false);
         idleTimer += Time.deltaTime;
+
         if (idleTimer > idleDuration)
             movingLeft = !movingLeft;
 
     }
+
+
+
     private void MoveInDirection(int _direction)
     {
         idleTimer = 0;

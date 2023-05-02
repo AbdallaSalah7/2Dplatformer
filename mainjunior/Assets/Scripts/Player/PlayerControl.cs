@@ -8,14 +8,6 @@ public class PlayerControl : MonoBehaviour
     public Rigidbody2D RB;
     public static PlayerControl instance;
     private float horizontalInput;
-    //[SerializeField] float moveSpeed = 10f;
-    //private bool isFacingRight = true;
-    //wall sliding
-    //private bool isWallSliding;
-    //private float wallSlidingSpeed = 2f;
-    //wall jumping
-    //private float _wallJumpStartTime;
-	//private int _lastWallJumpDir;
 
     //GiveJump
     public Rigidbody2D player;
@@ -84,8 +76,6 @@ public class PlayerControl : MonoBehaviour
     private float wallJumpingDuration = 0.4f;
     private Vector2 wallJumpingPower = new Vector2(4f, 8f);
     public static int PlayerJump = 0;
-    //public float LastOnGroundTime;
-    //public float LastPressedJumpTime;
 
 
 
@@ -106,13 +96,10 @@ public class PlayerControl : MonoBehaviour
     private TrailRenderer _trailRenderer;
     private bool isStickjump;
 
+
+
     [Header("Sticky&bullet")]
-    //[SerializeField] private float attackCooldown;
-    //[SerializeField] private Transform slimePoint;
-    //[SerializeField] private GameObject[] slimeballs;
-    //private float cooldownTimer = Mathf.Infinity;
     public LayerMask stickyWallLayer;
-    //public GameObject bulletPrefab;
     public Tilemap hitmap;
     public StickyBullet bulletpre;
     public StickyWall _stickywall; 
@@ -145,7 +132,7 @@ public class PlayerControl : MonoBehaviour
         runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
 		runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
-    }
+    }//LasoOngroundtime
     // Update is called once per frame
     void Update()
     {
@@ -170,14 +157,19 @@ public class PlayerControl : MonoBehaviour
 
         if (KnockBackCounter <= 0)
         {
-            if (_moveInput.x != 0) {  //If moving left or right
+            //If moving left or right
+            if (_moveInput.x != 0) {
 
-			CheckDirectionToFace(_moveInput.x > 0);
-            
+			    CheckDirectionToFace(_moveInput.x > 0);
             }
 
-
+            //check if player is grounded
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
+
+            if(isGrounded) 
+                LastOnGroundTime = coyoteTime; //if so sets the lastGrounded to coyoteTime
+
+
 
             //horizontalInput = Input.GetAxis("Horizontal");
 
@@ -314,13 +306,15 @@ public class PlayerControl : MonoBehaviour
         // Jumping
             if (Input.GetButtonDown("Jump") && isGrounded){
 
-                RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
+                LastOnGroundTime = 0;
+
+                //RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
                 //RB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
 
-                /* if (RB.velocity.y < 0)
+                if (RB.velocity.y < 0)
 			        jumpForce -= RB.velocity.y;
 
-		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); */
+		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
                 PlayerJump++;
                 SwitchingPlatforms.isToggle = false;
@@ -448,7 +442,7 @@ public class PlayerControl : MonoBehaviour
                 hitmap.SendMessage("SetBulletDirectionLeft");
                 bulletpre.dir = false;
             }
-        Instantiate(bulletpre, LaunchOffset.position/* + rotatedOffset*/, transform.rotation);
+        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         
     }
 
@@ -500,28 +494,45 @@ public class PlayerControl : MonoBehaviour
     }
 
 
-    private void Run(float lerpAmount){
+    private void Run(float lerpAmount)
+    {
+        //Calculate the direction we want to move in and our desired velocity
         float targetSpeed = _moveInput.x * runMaxSpeed;
-        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount);
 
+        //We can reduce are control using Lerp() this smooths changes to are direction and speed
+        //linearly interpolate between the current x velocity and target speed by lerpAmount, which is value in range [0, 1]
+        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount); //lerp = 1f
+
+
+        //Calculate AccelRate
         float accelRate;
         
+        //Gets an acceleration value based on if we are accelerating (includes turning) 
+		//or trying to decelerate (stop). As well as applying a multiplier if we're air borne (hung in air).
         if(LastOnGroundTime > 0){
             accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount : runDeccelAmount;
         }
         else{
 			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount * accelInAir : runDeccelAmount * deccelInAir;
         }
-
+        
+        //Conserve Momentum
+		//We won't slow the player down if they are moving in their desired direction but at a greater speed than their maxSpeed
         if(doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
 		{
 			accelRate = 0; 
 		}
 
+        //Calculate difference between current velocity and desired velocity
         float speedDif = targetSpeed - RB.velocity.x;
+
+        //Calculate force along x-axis to apply to thr player
 		float movement = speedDif * accelRate;
+
+        //Convert this to a vector and apply to rigidbody
 		RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
     }
+    
 
 
 
