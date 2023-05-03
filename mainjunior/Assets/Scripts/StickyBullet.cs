@@ -8,6 +8,7 @@ public class StickyBullet : MonoBehaviour
     GameObject impactEffect;
     private float speed = 8f;
     public bool dir; // 1true -> right 0 -> left
+    
 
     //private float direction;
     //private bool hit;
@@ -16,6 +17,7 @@ public class StickyBullet : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, lifetime);
+        
         //boxCollider = GetComponent<BoxCollider2D>();
     }
 

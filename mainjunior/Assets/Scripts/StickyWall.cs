@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEngine.Rendering.Universal.Light2D;
 
 public class StickyWall : MonoBehaviour
 {
@@ -14,8 +15,14 @@ public class StickyWall : MonoBehaviour
     public Tile stickyTileLeft;
     public bool DrawRight {get; private set;}
     public bool DrawLeft {get; private set;}    
-    public Tile[] stickyTiles;
-    public Vector3Int loc;
+
+    public bool canDraw;
+    //public Tile[] stickyTiles;
+    
+    List<GameObject> glowLights;
+
+    //[SerializeField] UnityEngine.Rendering.Universal.Light2D glow;
+    [SerializeField] GameObject glowSlime;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +30,10 @@ public class StickyWall : MonoBehaviour
         stickyMap = GetComponent<Tilemap>();
         DrawRight = false;
         DrawLeft = false;
+        canDraw = true;
+
+        glowSlime.gameObject.SetActive(false);
+        glowLights = new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -33,13 +44,84 @@ public class StickyWall : MonoBehaviour
 
     public void DrawRightTile(Vector3Int location){
 
-        stickyMap.SetTile(location, stickyTileRight);
+        /* stickyMap.SetTile(location, stickyTileRight);
+
         print("hit msg");
         isSticky = true;
         //Invoke("MakeUnsticky", stickTime);
-        StartCoroutine(removeTile(location));
-        
+        StartCoroutine(removeTile(location)); */
+
+        if(stickyMap.HasTile(location)){
+
+            canDraw = false;
+            return;
+        }
+        else{
+
+            stickyMap.SetTile(location, stickyTileRight);
+
+            canDraw = true;
+            isSticky = true;
+            //Invoke("MakeUnsticky", stickTime);
+            StartCoroutine(removeTile(location));  
+        }
     }
+
+
+    
+    public void DrawLeftTile(Vector3Int location){
+
+        if(stickyMap.HasTile(location)){
+
+            canDraw = false;
+            return;
+        }
+        else{
+
+            stickyMap.SetTile(location, stickyTileLeft);
+
+            canDraw = true;
+            isSticky = true;
+            //Invoke("MakeUnsticky", stickTime);
+            StartCoroutine(removeTile(location));  
+        }
+    }
+
+
+
+    public void MakeStickyGlow(Vector3 loc){
+
+        if(!canDraw)
+            return;
+
+        GameObject lit = Instantiate(glowSlime, new Vector3(loc.x - 0.5f, loc.y-0.1f, loc.z), Quaternion.identity);
+        glowLights.Add(lit);
+        lit.gameObject.SetActive(true);
+    }
+
+
+
+
+    IEnumerator removeTile(Vector3Int location)
+    {
+        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
+        yield return new WaitForSeconds(stickTime);
+        
+        Destroy(glowLights[0]);
+        glowLights.RemoveAt(0);
+
+        stickyMap.SetTile(location, null);
+        
+        isSticky = false;
+    }
+
+    /* void MakeUnsticky(Vector3Int location)
+    {
+        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
+        stickyMap.SetTile(location, null);
+        isSticky = false;
+    } */
+
     public void OnTriggerStay2D(Collider2D other) {
         if (other.gameObject.CompareTag("Player")){
             print("enter");
@@ -53,29 +135,8 @@ public class StickyWall : MonoBehaviour
 
         }
     }
-    public void DrawLeftTile(Vector3Int location){
-
-        stickyMap.SetTile(location, stickyTileLeft);
-        isSticky = true;
-        //Invoke("MakeUnsticky", stickTime);
-        StartCoroutine(removeTile(location));
-    }
-
-    IEnumerator removeTile(Vector3Int location)
-    {
-        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
-        yield return new WaitForSeconds(stickTime);
-        stickyMap.SetTile(location, null);
-        isSticky = false;
-    }
-
-    /* void MakeUnsticky(Vector3Int location)
-    {
-        //stickyMap.DeleteCells(new Vector3Int(0,0,0), 1, 1, 1);
-        stickyMap.SetTile(location, null);
-        isSticky = false;
-    } */
 }
+
 
 
 

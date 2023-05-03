@@ -51,6 +51,7 @@ public class StickPlatform : MonoBehaviour
 
                location = targetTilemap.WorldToCell(new Vector3(point.x, point.y, point.z));
                stickyTilemap.SendMessage("DrawRightTile", location);
+               stickyTilemap.SendMessage("MakeStickyGlow", point);
 
                print("hit right");
             }
@@ -59,6 +60,8 @@ public class StickPlatform : MonoBehaviour
 
                location = targetTilemap.WorldToCell(new Vector3(point.x-1, point.y, point.z)); 
                stickyTilemap.SendMessage("DrawLeftTile", location);
+               stickyTilemap.SendMessage("MakeStickyGlow", point);
+
 
                print("hit left");
 

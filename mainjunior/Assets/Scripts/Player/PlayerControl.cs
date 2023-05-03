@@ -141,7 +141,7 @@ public class PlayerControl : MonoBehaviour
 
         
         //--------------------------------------------------------STICKY-------------------------------------------------------------
-        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1,1),0, stickyWallLayer); //we try to make bigger collider? or smoller idk
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1,1),0, stickyWallLayer); 
         foreach (Collider2D collider in colliders)
         {
             StickyWall stickyWall = collider.GetComponent<StickyWall>();
@@ -311,15 +311,22 @@ public class PlayerControl : MonoBehaviour
                 RB.velocity = new Vector2(RB.velocity.x, jumpForce); 
                 //RB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
 
-                /* if (RB.velocity.y < 0)
-			        jumpForce -= RB.velocity.y;
-
-		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); */
+                
 
                 PlayerJump++;
                 SwitchingPlatforms.isToggle = false;
                 AltSwitchingPlatforms.isToggle = false;
                 print(PlayerJump);
+
+
+
+                /* if (RB.velocity.y < 0)
+			        jumpForce -= RB.velocity.y;
+
+		        RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); */
+
+
+
                 /*if (isGrounded)
                 {
 
@@ -406,7 +413,21 @@ public class PlayerControl : MonoBehaviour
 
     void Shoot()
     {
-    	/*Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        if (IsFacingRight) 
+            {
+                hitmap.SendMessage("SetBulletDirectionRight");
+                bulletpre.dir = true;
+            }
+            else
+            {
+                hitmap.SendMessage("SetBulletDirectionLeft");
+                bulletpre.dir = false;
+            }
+        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
+
+
+        /*Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     	Vector2 direction = ((Vector2)mousePos - (Vector2)transform.position).normalized;
     	GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
     	
@@ -430,19 +451,6 @@ public class PlayerControl : MonoBehaviour
         //slimeballs[0].GetComponent<StickyBullet>().SetDirection(Mathf.Sign(transform.localScale.x));
 
         //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
-
-
-        if (IsFacingRight) 
-            {
-                hitmap.SendMessage("SetBulletDirectionRight");
-                bulletpre.dir = true;
-            }
-            else
-            {
-                hitmap.SendMessage("SetBulletDirectionLeft");
-                bulletpre.dir = false;
-            }
-        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         
     }
 
