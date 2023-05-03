@@ -9,6 +9,7 @@ public class StickyBullet : MonoBehaviour
     private float speed = 8f;
     public bool dir; // 1true -> right 0 -> left
     
+    
 
     //private float direction;
     //private bool hit;
@@ -49,6 +50,19 @@ public class StickyBullet : MonoBehaviour
         }
         
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        
+        if (other.tag == "Enemy")
+        {
+        
+            Destroy(gameObject);
+            other.GetComponent<Health>().TakeDamage(1);
+        }
+    }
+
+    
 
 
 
