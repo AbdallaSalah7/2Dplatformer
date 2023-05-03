@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         lastPos = transform.position;
+        AudioManager.instance.StopSFX(2);
     }
 
     // Update is called once per frame

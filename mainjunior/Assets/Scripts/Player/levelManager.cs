@@ -11,10 +11,11 @@ public class levelManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+
     }
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame

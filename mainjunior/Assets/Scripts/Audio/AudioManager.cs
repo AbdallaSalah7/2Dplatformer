@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        StopSFX(2);
     }
     void Start()
     {
@@ -26,7 +27,11 @@ public class AudioManager : MonoBehaviour
     {
         soundEffects[soundToPlay].Stop();
 
-        soundEffects[soundToPlay].pitch = Random.Range(0.9f, 1.1f);
+        //soundEffects[soundToPlay].pitch = Random.Range(0.9f, 1.1f);
         soundEffects[soundToPlay].Play();
+    }
+    public void StopSFX(int soundToStop)
+    {
+        soundEffects[soundToStop].Stop();
     }
 }

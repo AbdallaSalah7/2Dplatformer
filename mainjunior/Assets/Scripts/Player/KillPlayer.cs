@@ -20,7 +20,7 @@ public class KillPlayer : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             levelManager.instance.RespawnPlayer();
-            AudioManager.instance.playSFX(3);
+            AudioManager.instance.playSFX(0);
         }
     }
 }

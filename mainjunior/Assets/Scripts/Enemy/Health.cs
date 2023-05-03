@@ -8,9 +8,7 @@ public class Health : MonoBehaviour
     [SerializeField] private float startingHealth;
     public float currentHealth { get; private set; }
     private Animator anim;
-    public bool dead;
-
-
+    public bool dead = false;
 
     private void Awake()
     {
@@ -18,9 +16,13 @@ public class Health : MonoBehaviour
         currentHealth = startingHealth;
         anim = GetComponent<Animator>();
     }
+    private void Start()
+    {
+       
+    }
     public void TakeDamage(float _damage)
     {
-        currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth); 
+        currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth);
 
         if (currentHealth > 0)
         {
@@ -46,6 +48,7 @@ public class Health : MonoBehaviour
             }
             if (dead)
             {
+                AudioManager.instance.playSFX(2);
                 this.enabled = false;
             }
         }
