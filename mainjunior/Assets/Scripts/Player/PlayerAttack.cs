@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     private Animator anim;
-    [SerializeField] private float AttackCoolDown;
+    //[SerializeField] private float AttackCoolDown;
      [SerializeField] private Transform pencilPoint;
      [SerializeField] private GameObject[] pencils;
     public PlayerControl playerControl;
