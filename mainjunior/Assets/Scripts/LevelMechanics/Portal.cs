@@ -9,7 +9,7 @@ public class Portal : MonoBehaviour
     Animation anim;
     Rigidbody2D playerRB;
     Animator anima;
-    public SpriteRenderer theSr;
+    //public SpriteRenderer theSr;
     // Start is called before the first frame update
 
     private void Awake()

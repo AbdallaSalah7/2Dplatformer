@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5587167453482646666}
   - component: {fileID: 5587167453482646667}
   - component: {fileID: 5587167453482646660}
-  - component: {fileID: 5587167453482646661}
   - component: {fileID: 5587167453482646665}
   m_Layer: 0
   m_Name: PortalB
@@ -108,20 +107,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5587167453482646661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5587167453482646662}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 046b76123103f2e4d90c99e07a024037, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  destination: {fileID: 0}
-  theSr: {fileID: 0}
 --- !u!61 &5587167453482646665
 BoxCollider2D:
   m_ObjectHideFlags: 0
