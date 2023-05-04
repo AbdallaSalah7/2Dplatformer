@@ -40,15 +40,25 @@ public class Intro_portal : MonoBehaviour
     IEnumerator PortalIn()
     {
         playerRB.simulated = false;
+        StartCoroutine(MoveInPortal());
 
 
-
-        yield return new WaitForSeconds(0.5f);
-       SceneManager.LoadScene(sceneName);
+        yield return new WaitForSeconds(0.2f);
+        SceneManager.LoadScene(sceneName);
         playerRB.velocity = Vector2.zero;
 
         yield return new WaitForSeconds(0.2f);
         playerRB.simulated = true;
+    }
+    IEnumerator MoveInPortal()
+    {
+        float timer = 0;
+        while (timer < 0.5f)
+        {
+            player.transform.position = Vector2.MoveTowards(player.transform.position, transform.position, 3 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+            timer += Time.deltaTime;
+        }
     }
 
 }
