@@ -11,6 +11,7 @@ TagManager:
   - Sticky
   - platform
   - Enemy
+  - SlimeLight
   layers:
   - Default
   - TransparentFX

@@ -9,7 +9,7 @@ public class PlayerAttack : MonoBehaviour
      [SerializeField] private Transform pencilPoint;
      [SerializeField] private GameObject[] pencils;
     public PlayerControl playerControl;
-    private float cooldownTimer = Mathf.Infinity;
+    //private float cooldownTimer = Mathf.Infinity;
     private void Awake()
     {
         playerControl = GetComponent<PlayerControl>();
@@ -25,7 +25,7 @@ public class PlayerAttack : MonoBehaviour
     }
     private void Attack()
     {
-        cooldownTimer = 0;
+        //cooldownTimer = 0;
 
         pencils[FindPencils()].transform.position = pencilPoint.position;
         pencils[FindPencils()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));

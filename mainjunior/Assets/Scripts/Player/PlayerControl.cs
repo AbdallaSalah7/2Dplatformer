@@ -105,6 +105,7 @@ public class PlayerControl : MonoBehaviour
     public StickyBullet bulletpre;
     public StickyWall _stickywall;
     public Transform LaunchOffset;
+    public bool playSticky;
 
     private BoxCollider2D boxCollider;
     private Vector2 stickjump;
@@ -129,6 +130,7 @@ public class PlayerControl : MonoBehaviour
     void Start()
     {
         IsFacingRight = true;
+        playSticky = false;
         runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
         runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
@@ -144,13 +146,21 @@ public class PlayerControl : MonoBehaviour
         foreach (Collider2D collider in colliders)
         {
             StickyWall stickyWall = collider.GetComponent<StickyWall>();
+
             if (stickyWall != null && stickyWall.isSticky)
             {
                 //_moveInput.x = 0;
                 RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall it
+                //playSticky = true;
+                //anim.SetTrigger("isSlimeSticky");
                 break;
             }
         }
+
+
+
+        //if(!playSticky)
+        //    anim.SetTrigger("unStick");
 
      
         if (KnockBackCounter <= 0)
@@ -570,11 +580,13 @@ public class PlayerControl : MonoBehaviour
 
 
 
-
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("PlatformMechanics"))
+        if (other.gameObject.CompareTag("SlimeLight"))
         {
+
+            playSticky = true;
+            anim.SetTrigger("isSlimeSticky");
             //print("initial velocity "+player.velocity.x );
             //print("");
             //if(_moveInput.x != 0)
@@ -587,6 +599,17 @@ public class PlayerControl : MonoBehaviour
 
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other) {
+        
+        if (other.gameObject.CompareTag("SlimeLight")){
+
+            playSticky = false;
+            anim.SetTrigger("unStick");
+        }
+    }
+
+    
     void createDust()
     {
         dust.Play();

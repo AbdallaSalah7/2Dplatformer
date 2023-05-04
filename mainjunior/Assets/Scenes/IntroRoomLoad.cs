@@ -14,7 +14,7 @@ public class IntroRoomLoad : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.KeypadEnter))
+        if (Input.GetKeyDown(KeyCode.Return))
         {
             SceneManager.LoadScene(sceneName);
         }
