@@ -73,3 +73,6 @@ TagManager:
   - name: Stickyslime
     uniqueID: 2938610679
     locked: 0
+  - name: Enemy
+    uniqueID: 3741718567
+    locked: 0
