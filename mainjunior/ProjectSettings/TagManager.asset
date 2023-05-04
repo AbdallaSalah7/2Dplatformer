@@ -30,8 +30,8 @@ TagManager:
   - Stickyslime
   - Extras
   - Enemy
-  - 
-  - 
+  - Cam
+  - camFrame
   - 
   - 
   - 
@@ -75,4 +75,7 @@ TagManager:
     locked: 0
   - name: Enemy
     uniqueID: 3741718567
+    locked: 0
+  - name: camFrame
+    uniqueID: 2873144645
     locked: 0

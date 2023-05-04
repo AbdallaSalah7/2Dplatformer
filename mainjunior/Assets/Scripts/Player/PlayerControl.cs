@@ -586,7 +586,7 @@ public class PlayerControl : MonoBehaviour
         {
 
             playSticky = true;
-            anim.SetTrigger("isSlimeSticky");
+            anim.SetBool("isStickySlime", playSticky);
             //print("initial velocity "+player.velocity.x );
             //print("");
             //if(_moveInput.x != 0)
@@ -605,9 +605,10 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.CompareTag("SlimeLight")){
 
             playSticky = false;
-            anim.SetTrigger("unStick");
+            anim.SetBool("isStickySlime", playSticky);
         }
     }
+
 
     
     void createDust()
