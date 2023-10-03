@@ -11,7 +11,7 @@ public class HallwayDialogueManager : MonoBehaviour
     public Text dialogueText;
     public GameObject DialogueCanvas;
     public GameObject CCanvas;
-    [SerializeField] public bool DialogueEnd = false;
+    [SerializeField] public bool HallwayDialogueEnd = false;
     /// <summary>
     /// Awake is called when the script instance is being loaded.
     /// </summary>
@@ -25,7 +25,7 @@ public class HallwayDialogueManager : MonoBehaviour
     {
         sentences = new Queue<string>();
     }
-    public void StartDialogue(Dialogue dialogue)
+    public void StartDialogue(HallwayDialogue dialogue)
     {
         nameText.text = dialogue.name;
         sentences.Clear();
@@ -35,7 +35,6 @@ public class HallwayDialogueManager : MonoBehaviour
             sentences.Enqueue(sentence);
         }
         DisplayNextSentence();
-
     }
     public void DisplayNextSentence()
     {
@@ -61,9 +60,10 @@ public class HallwayDialogueManager : MonoBehaviour
     void EndDialogue()
     {
         Debug.Log("End of convo");
-        DialogueEnd = true;
+        HallwayDialogueEnd = true;
         DialogueCanvas.SetActive(false);
         //Destroy(DialogueCanvas);
+        HallwayDialogueEnd = true;
     }
 
 }

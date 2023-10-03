@@ -5,7 +5,7 @@ using UnityEngine;
 public class HallwayDialogueTrigger : MonoBehaviour
 {
     public static HallwayDialogueTrigger instance;
-    public Dialogue dialogue;
+    public HallwayDialogue dialogue;
     public GameObject roommate;
     public BoxCollider2D playerCollider;
     public BoxCollider2D roommateCollider;
@@ -21,9 +21,8 @@ public class HallwayDialogueTrigger : MonoBehaviour
     }
     public void TriggerDialogue()
     {
-        DialogueManager.instance.StartDialogue(dialogue);
+        HallwayDialogueManager.instance.StartDialogue(dialogue);
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.C))

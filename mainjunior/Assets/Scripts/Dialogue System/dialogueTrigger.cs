@@ -25,19 +25,21 @@ public class dialogueTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerInRange)
+        /*if (playerInRange &&! dialogueManager.GetInstance().dialogueIsPlaying)
         {
             visualCue.SetActive(true);
            // if (InputManager.GetInstance().GetInteractPressed())
            // {
                 //DialogueManager.GetInstance().EnterDialogueMode(inkJSON, emoteAnimator);
               //  Debug.Log(inkJSON.text);
+              //dialogueManager.GetInstance().EnterDialogueMode(inkJSON);
             //}
         }
         else
         {
             visualCue.SetActive(false);
         }
+        */
 
     }
     private void OnTriggerEnter2D(Collider2D collider)

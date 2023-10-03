@@ -28,6 +28,7 @@ public class PlayerControl : MonoBehaviour
     private SpriteRenderer theSr;
     public ParticleSystem dust;
     public GameObject DialogueBox;
+    public GameObject HallwayDialogueBox;
 
 
     //------------------------------------CHECK VARIABLES------------------------------------------------
@@ -485,7 +486,14 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.tag == "Roommate")
         {
             DialogueBox.SetActive(true);
+            print("Player near roommaet");
         }
+        if (other.gameObject.name == "HallwayRoommate")
+        {
+            HallwayDialogueBox.SetActive(true);
+            print("Player near roommaet");
+        }
+
 
     }
 
@@ -500,6 +508,11 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.tag == "Roommate")
         {
             DialogueBox.SetActive(false);
+        }
+        if (other.gameObject.name == "HallwayRoommate")
+        {
+            HallwayDialogueBox.SetActive(false);
+            print("Player far from roommaet");
         }
     }
 

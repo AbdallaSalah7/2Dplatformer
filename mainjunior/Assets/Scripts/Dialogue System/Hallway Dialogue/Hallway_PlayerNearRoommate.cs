@@ -13,7 +13,7 @@ public class Hallway_PlayerNearRoomate : MonoBehaviour
         float distToRoomate = Vector3.Distance(transform.position, Player.transform.position);
         print("Distance to roomate is: " + distToRoomate);
 
-        if (distToRoomate <= 1.8f && DialogueManager.instance.backyardDialogueEnd == true)
+        if (distToRoomate <= 1.8f && DialogueManager.instance.DialogueEnd == true)
         {
             Hallway_CCanvas.SetActive(true);
             print("WHy is it not working?");
@@ -26,7 +26,7 @@ public class Hallway_PlayerNearRoomate : MonoBehaviour
         {
             Hallway_CCanvas.SetActive(false);
         }
-        if (HallwayDialogueManager.instance.DialogueEnd == true)
+        if (HallwayDialogueManager.instance.HallwayDialogueEnd == true)
         {
             Hallway_CCanvas.SetActive(false);
 
