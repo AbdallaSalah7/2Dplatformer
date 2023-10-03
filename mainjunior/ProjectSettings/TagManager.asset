@@ -12,6 +12,7 @@ TagManager:
   - platform
   - Enemy
   - SlimeLight
+  - Roommate
   layers:
   - Default
   - TransparentFX

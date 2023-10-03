@@ -17,16 +17,19 @@ public class DisapeaingPlatform : MonoBehaviour
     void Update()
     {
         currentTime += Time.deltaTime;
-        if(currentTime >= ToToggle){
+        if (currentTime >= ToToggle)
+        {
             currentTime = 0;
             TogglePlatform();
         }
     }
-    void TogglePlatform(){
+    void TogglePlatform()
+    {
         enablePlatform = !enablePlatform;
-        foreach(Transform child in gameObject.transform){
-            if(child.tag != "Player")
-            child.gameObject.SetActive(enablePlatform);
+        foreach (Transform child in gameObject.transform)
+        {
+            if (child.tag != "Player")
+                child.gameObject.SetActive(enablePlatform);
         }
     }
 }

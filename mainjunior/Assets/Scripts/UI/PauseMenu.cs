@@ -16,34 +16,41 @@ public class PauseMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Pause")){
-            if(isPaused){
+        if (Input.GetButtonDown("Pause"))
+        {
+            if (isPaused)
+            {
                 ResumeGame();
             }
-            else{
+            else
+            {
                 PauseGame();
             }
         }
     }
-    public void PauseGame(){
+    public void PauseGame()
+    {
         pauseMenu.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;
     }
 
-    public void ResumeGame(){
+    public void ResumeGame()
+    {
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
     }
 
-    public void GoToMainMenu(){
+    public void GoToMainMenu()
+    {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main_menu");
-
     }
 
-    public void QuitGame(){
+    public void QuitGame()
+    {
         Application.Quit();
     }
+
 }

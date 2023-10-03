@@ -6,6 +6,8 @@ using UnityEngine.Tilemaps;
 public class PlayerControl : MonoBehaviour
 {
     public Rigidbody2D RB;
+    [SerializeField] private float maxSlopeAngle = 45f;
+
     public static PlayerControl instance;
     private float horizontalInput;
 
@@ -25,6 +27,7 @@ public class PlayerControl : MonoBehaviour
     private Animator anim;
     private SpriteRenderer theSr;
     public ParticleSystem dust;
+    public GameObject DialogueBox;
 
 
     //------------------------------------CHECK VARIABLES------------------------------------------------
@@ -64,7 +67,6 @@ public class PlayerControl : MonoBehaviour
     [Range(0f, 1)] public float deccelInAir = 1f;
     public bool doConserveMomentum = true;
     private Vector2 _moveInput;
-
 
 
     [Header("Jump")]
@@ -113,7 +115,6 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float stickjumpVelocity = 14f;
 
 
-
     // Start is called before the first frame update
     private void Awake()
     {
@@ -122,7 +123,7 @@ public class PlayerControl : MonoBehaviour
         theSr = GetComponent<SpriteRenderer>();
         _trailRenderer = GetComponent<TrailRenderer>();
         instance = this;
-        
+
         boxCollider = GetComponent<BoxCollider2D>();
         //platform = GetComponent<PlatformMoving>();
 
@@ -157,12 +158,6 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-
-
-        //if(!playSticky)
-        //    anim.SetTrigger("unStick");
-
-     
         if (KnockBackCounter <= 0)
         {
             //If moving left or right
@@ -227,7 +222,7 @@ public class PlayerControl : MonoBehaviour
             {
                 wallJumpCoolDown += Time.deltaTime;
             }
- 
+
         }
         else
         {
@@ -265,31 +260,30 @@ public class PlayerControl : MonoBehaviour
         /*if(Input.GetButtonDown("Fire1")||Input.GetKeyDown(KeyCode.S)){
         Instantiate(ProjectilePrefab, LaunchOffset.position, transform.rotation);
         }*/
+
+        if (isGrounded)
+        {
+            LastOnGroundTime = coyoteTime; // Reset coyote time when grounded.
+        }
+        else
+        {
+            LastOnGroundTime -= Time.deltaTime;
+        }
     }
-
-
 
 
     private void FixedUpdate()
     {
-        /* if (!isWallJumping)
-        {
-            player.velocity = new Vector2(6f * _moveInput.x, player.velocity.y);
-        } */
 
         if (!isWallJumping)
         {
 
             Run(1);
+
         }
+        HandleSlopeMovement();
 
     }
-
-
-
-
-  
-
 
     public void Jump()
     {
@@ -304,30 +298,10 @@ public class PlayerControl : MonoBehaviour
             AudioManager.instance.playSFX(0);
             //RB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
 
-
-
             PlayerJump++;
             SwitchingPlatforms.isToggle = false;
             AltSwitchingPlatforms.isToggle = false;
             print(PlayerJump);
-
-
-
-            /* if (RB.velocity.y < 0)
-                jumpForce -= RB.velocity.y;
-
-            RB.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse); */
-
-
-
-            /*if (isGrounded)
-            {
-
-                player.velocity = new Vector2(player.velocity.x, jumpForce);
-                player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, 0f, jumpForce));
-                PlayerJump = true;
-                PlayerJump = !PlayerJump;
-            }*/
 
         }
 
@@ -337,24 +311,6 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-
-
-    /* private bool isWalled()
-     {
-         return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
-     }*/
-    /*private void wallSlide()
-    {
-        if (isWalled() && !isGrounded && horizontalInput != 0f)
-        {
-            isWallSliding = true;
-            player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, -wallSlidingSpeed, float.MaxValue));
-        }
-        else
-        {
-            isWallSliding = false;
-        }
-    }*/
     private void WallJump()
     {
         if (isWallSliding)
@@ -394,18 +350,6 @@ public class PlayerControl : MonoBehaviour
         isWallJumping = false;
     }
 
-    /*private void Jump()
-	{
-		LastPressedJumpTime = 0;
-		LastOnGroundTime = 0;
-
-		float force = jumpForce;
-		if (RB.velocity.y < 0)
-			force -= RB.velocity.y;
-
-		RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
-	}*/
-
     void Shoot()
     {
 
@@ -421,32 +365,6 @@ public class PlayerControl : MonoBehaviour
         }
         Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
 
-
-        /*Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    	Vector2 direction = ((Vector2)mousePos - (Vector2)transform.position).normalized;
-    	GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-    	
-
-		if((mousePos.x - transform.position.x) > 0){  //no mouse bro
-
-			hitmap.SendMessage("SetBulletDirectionRight");
-		}
-		else if((mousePos.x - transform.position.x) < 0){
-
-			hitmap.SendMessage("SetBulletDirectionLeft");
-
-		}
-
-
-		bullet.GetComponent<Rigidbody2D>().velocity = direction * 7f;*/
-        //anim.SetTrigger("shoot");
-        //cooldownTimer = 0;
-
-        //slimeballs[0].transform.position = slimePoint.position;
-        //slimeballs[0].GetComponent<StickyBullet>().SetDirection(Mathf.Sign(transform.localScale.x));
-
-        //Vector3 rotatedOffset = LaunchOffset.rotation * LaunchOffset.position;
-
     }
 
     public void GiveJump()
@@ -458,7 +376,6 @@ public class PlayerControl : MonoBehaviour
 
         isStickjump = false;
     }
-
 
 
     private bool isSlimeWalled()
@@ -485,21 +402,12 @@ public class PlayerControl : MonoBehaviour
     }
 
 
-
-
-    /* public bool CanJumpFromSticky(){
-
-        return isSticking=
-    } */
-
-
     private IEnumerator StopDashing()
     {
         yield return new WaitForSeconds(dashingTime);
         _trailRenderer.emitting = false;
         isDashing = false;
     }
-
 
     private void Run(float lerpAmount)
     {
@@ -542,9 +450,6 @@ public class PlayerControl : MonoBehaviour
         RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
     }
 
-
-
-
     public void CheckDirectionToFace(bool isMovingRight)
     {
         if (isMovingRight != IsFacingRight && !isWallJumping)
@@ -569,53 +474,79 @@ public class PlayerControl : MonoBehaviour
         return horizontalInput == 0 && isGrounded && !onWall();
 
     }
-    /*private bool isGrounded()
-    {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, GroundLayer);
-        return raycastHit.collider != null;
-    }*/
-
-
-
-
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("SlimeLight"))
         {
-
             playSticky = true;
             anim.SetBool("isStickySlime", playSticky);
-            //print("initial velocity "+player.velocity.x );
-            //print("");
-            //if(_moveInput.x != 0)
-            //    player.velocity = new Vector2( (player.velocity.x + MovePlatform.moveSpeed), 0);
-
-            //player.velocity = new Vector2( (player.velocity.x + PlatformMoving.instance.speed), 0);
-
-            //print("Velocity after adding "+player.velocity.x);
-            //print(player.velocity.x + " " +PlatformMoving.instance.speed );
-
         }
+        if (other.gameObject.tag == "Roommate")
+        {
+            DialogueBox.SetActive(true);
+        }
+
     }
 
-    private void OnTriggerExit2D(Collider2D other) {
-        
-        if (other.gameObject.CompareTag("SlimeLight")){
+    private void OnTriggerExit2D(Collider2D other)
+    {
 
+        if (other.gameObject.CompareTag("SlimeLight"))
+        {
             playSticky = false;
             anim.SetBool("isStickySlime", playSticky);
         }
+        if (other.gameObject.tag == "Roommate")
+        {
+            DialogueBox.SetActive(false);
+        }
     }
 
-
-    
     void createDust()
     {
         dust.Play();
     }
+    /// <summary>
+    /// ////////////////////
+    /// Slopes
+    /// </summary> <summary>
+    /// 
+    /// </summary>
+    private void HandleSlopeMovement()
+    {
+        if (IsOnSlope())
+        {
+            float slopeAngle = CalculateSlopeAngle();
+            if (slopeAngle <= maxSlopeAngle)
+            {
+                // Adjust the player's velocity based on the slope angle.
+                float slopeModifier = Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
+                RB.velocity = new Vector2(RB.velocity.x * slopeModifier, RB.velocity.y);
+            }
+        }
+    }
 
+    private bool IsOnSlope()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, whatIsGround);
+        if (hit.collider != null)
+        {
+            float angle = Vector2.Angle(hit.normal, Vector2.up);
+            return angle > 0f;
+        }
+        return false;
+    }
 
-
+    private float CalculateSlopeAngle()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, whatIsGround);
+        if (hit.collider != null)
+        {
+            Vector2 groundNormal = hit.normal;
+            float slopeAngle = Vector2.Angle(groundNormal, Vector2.up);
+            return slopeAngle;
+        }
+        return 0f;
+    }
 }
