@@ -34,11 +34,11 @@ public class playerHealthController : MonoBehaviour
         {
             invincibleCount = invincibleCount - Time.deltaTime;
 
-            if (invincibleCount <= 0)
+            /*if (invincibleCount <= 0)
             {
                 print("why");
                 theSr.color = new Color(theSr.color.r, theSr.color.g, theSr.color.b, 1f);
-            }
+            }*/
         }
     }
     public void DealDamage()
@@ -50,7 +50,7 @@ public class playerHealthController : MonoBehaviour
             //if (currentHealth <= 0)
             //{
                 currentHealth = 0;
-                Instantiate(deathEffect,transform.position,transform.rotation);
+                //Instantiate(deathEffect,transform.position,transform.rotation);
                 //gameObject.SetActive(false);
                 levelManager.instance.RespawnPlayer();
             //}
