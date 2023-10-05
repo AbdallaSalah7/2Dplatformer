@@ -138,7 +138,7 @@ public class PlayerControl : MonoBehaviour
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
         runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
 
-        jumpForce = 12f;
+        jumpForce = 5.5f;
         JumpRelease = 5f;
     }//LasoOngroundtime
     void Update()
