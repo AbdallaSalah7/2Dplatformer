@@ -71,8 +71,8 @@ public class PlayerControl : MonoBehaviour
 
 
     [Header("Jump")]
-    [SerializeField] float jumpForce = 10f;
-    [SerializeField] float JumpRelease = 2f;
+    private float jumpForce = 4f;
+    private float JumpRelease = 5f;
     public bool isWallJumping;
     private float wallJumpingDirection;
     private float WallJumpingTime = 0.2f;
@@ -137,6 +137,9 @@ public class PlayerControl : MonoBehaviour
         runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
         runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
+
+        jumpForce = 5.5f;
+        JumpRelease = 5f;
     }//LasoOngroundtime
     void Update()
     {
@@ -295,9 +298,9 @@ public class PlayerControl : MonoBehaviour
 
             LastOnGroundTime = 0;
 
-            RB.velocity = new Vector2(RB.velocity.x, jumpForce);
+            //RB.velocity = new Vector2(RB.velocity.x, jumpForce);
             AudioManager.instance.playSFX(0);
-            //RB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+            RB.AddForce(new Vector2(0, jumpForce*1.5f), ForceMode2D.Impulse);
 
             PlayerJump++;
             SwitchingPlatforms.isToggle = false;
@@ -308,7 +311,7 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0)
         {
-            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease);
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease*0.7f);
         }
     }
 
