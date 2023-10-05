@@ -16,7 +16,7 @@ public class PlayerNearRoomate : MonoBehaviour
     void Update()
     {
         float distToRoomate = Vector3.Distance(transform.position, Player.transform.position);
-        print("Distance to roomate is: " + distToRoomate);
+        //print("Distance to roomate is: " + distToRoomate);
 
         if (distToRoomate <= 1.8f)
         {
