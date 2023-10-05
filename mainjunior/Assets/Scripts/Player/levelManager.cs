@@ -6,7 +6,7 @@ public class levelManager : MonoBehaviour
 {
     public static levelManager instance;
     public float waitToReswamp;
-    public int gemsCollected;
+   public int gemsCollected;
     // Start is called before the first frame update
     private void Awake()
     {
