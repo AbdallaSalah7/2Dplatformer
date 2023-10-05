@@ -497,7 +497,6 @@ public class PlayerControl : MonoBehaviour
             print("Player near roommaet");
         }
 
-
     }
 
     private void OnTriggerExit2D(Collider2D other)

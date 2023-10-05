@@ -27,6 +27,7 @@ public class DialogueManager : MonoBehaviour
     }
     public void StartDialogue(Dialogue dialogue)
     {
+        DialogueTrigger.instance.DialogueBox.SetActive(true);
         nameText.text = dialogue.name;
         sentences.Clear();
 
