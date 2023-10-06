@@ -23,7 +23,6 @@ public class DialogueTrigger : MonoBehaviour
     {
         DialogueManager.instance.StartDialogue(dialogue);
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.C))

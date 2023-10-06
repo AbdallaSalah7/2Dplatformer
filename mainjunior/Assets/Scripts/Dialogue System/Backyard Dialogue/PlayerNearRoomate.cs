@@ -33,10 +33,6 @@ public class PlayerNearRoomate : MonoBehaviour
         if (DialogueManager.instance.DialogueEnd == true)
         {
             CCanvas.SetActive(false);
-
         }
-
-
-
     }
 }

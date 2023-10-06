@@ -20,7 +20,6 @@ public class DialogueManager : MonoBehaviour
         instance = this;
     }
     private Queue<string> sentences;
-
     void Start()
     {
         sentences = new Queue<string>();
@@ -36,7 +35,6 @@ public class DialogueManager : MonoBehaviour
             sentences.Enqueue(sentence);
         }
         DisplayNextSentence();
-
     }
     public void DisplayNextSentence()
     {
