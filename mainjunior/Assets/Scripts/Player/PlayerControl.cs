@@ -59,7 +59,7 @@ public class PlayerControl : MonoBehaviour
 
 
     [Header("run")]
-    public float runMaxSpeed = 4.5f;
+    private float runMaxSpeed = 3.5f;
     [HideInInspector] public float runAccelAmount;
     public float runAcceleration = 4.5f;
     [HideInInspector] public float runDeccelAmount;
@@ -71,8 +71,9 @@ public class PlayerControl : MonoBehaviour
 
 
     [Header("Jump")]
-    private float jumpForce = 4f;
+    public float jumpForce = 4f;
     private float JumpRelease = 5f;
+    private float fallForce = 4.5f;
     public bool isWallJumping;
     private float wallJumpingDirection;
     private float WallJumpingTime = 0.2f;
@@ -138,8 +139,9 @@ public class PlayerControl : MonoBehaviour
         runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
         runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
 
-        jumpForce = 5.5f;
+        jumpForce = 4.5f;
         JumpRelease = 5f;
+        runMaxSpeed = 8f;
     }//LasoOngroundtime
     void Update()
     {
@@ -313,6 +315,10 @@ public class PlayerControl : MonoBehaviour
         {
             RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease*0.7f);
         }
+
+        if(!isGrounded && RB.velocity.y < 0){
+            RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force);
+        }
     }
 
     private void WallJump()
@@ -412,7 +418,7 @@ public class PlayerControl : MonoBehaviour
         _trailRenderer.emitting = false;
         isDashing = false;
     }
-
+//check the code
     private void Run(float lerpAmount)
     {
         //Calculate the direction we want to move in and our desired velocity
@@ -451,7 +457,13 @@ public class PlayerControl : MonoBehaviour
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-        RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        if(!isGrounded){
+            RB.AddForce(movement * Vector2.right * 0.5f, ForceMode2D.Force);
+        }
+        else{
+            RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+        }
+        
     }
 
     public void CheckDirectionToFace(bool isMovingRight)
