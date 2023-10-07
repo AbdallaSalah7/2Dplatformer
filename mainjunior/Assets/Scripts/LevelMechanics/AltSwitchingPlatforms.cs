@@ -5,7 +5,7 @@ using UnityEngine;
 public class AltSwitchingPlatforms : MonoBehaviour
 {
     public bool enablePlatform = true;
-     public static bool isToggle = true;
+     public bool isToggle = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +13,7 @@ public class AltSwitchingPlatforms : MonoBehaviour
         foreach(Transform child in gameObject.transform){
             if(child.tag != "Player")
             child.gameObject.SetActive(enablePlatform);
-        } // a7a wait
+        } 
     }
 
     // Update is called once per frame
@@ -33,6 +33,11 @@ public class AltSwitchingPlatforms : MonoBehaviour
             if(child.tag != "Player")
             child.gameObject.SetActive(enablePlatform);
         }
+        //gameObject.SetActive(enablePlatform);
         isToggle = true;
+    }
+
+    public void setToggleToFalse(){
+        isToggle = false;
     }
 }

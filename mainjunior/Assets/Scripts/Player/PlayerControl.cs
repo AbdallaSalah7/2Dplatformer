@@ -29,6 +29,8 @@ public class PlayerControl : MonoBehaviour
     public ParticleSystem dust;
     public GameObject DialogueBox;
     public GameObject HallwayDialogueBox;
+    private SwitchingPlatforms[] switches;
+    private AltSwitchingPlatforms[] altswitches;
 
 
     //------------------------------------CHECK VARIABLES------------------------------------------------
@@ -142,6 +144,14 @@ public class PlayerControl : MonoBehaviour
         jumpForce = 4.5f;
         JumpRelease = 5f;
         runMaxSpeed = 8f;
+
+
+        switches = Object.FindObjectsOfType<SwitchingPlatforms>();
+
+        altswitches = Object.FindObjectsOfType<AltSwitchingPlatforms>();
+            print("there are " + switches.Length);
+            
+
     }//LasoOngroundtime
     void Update()
     {
@@ -305,8 +315,36 @@ public class PlayerControl : MonoBehaviour
             RB.AddForce(new Vector2(0, jumpForce*1.5f), ForceMode2D.Impulse);
 
             PlayerJump++;
-            SwitchingPlatforms.isToggle = false;
-            AltSwitchingPlatforms.isToggle = false;
+
+            foreach(SwitchingPlatforms switche in switches){
+                //switche = switche.Object.GetComponent<SwitchingPlatforms>();
+                switche.setToggleToFalse();
+                print("set to false");
+            }
+
+            //SwitchingPlatforms[] switches = (SwitchingPlatforms[]) Object.FindObjectsOfType(typeof(SwitchingPlatforms));
+            //SwitchingPlatforms[] switches = Object.FindObjectsOfType<SwitchingPlatforms>();
+            //print("there are " + switches.Length);
+            //foreach(SwitchingPlatforms switche in switches){
+            //    //switche = switche.Object.GetComponent<SwitchingPlatforms>();
+            //    switche.setToggleToFalse();
+            //    print("set to false");
+            //}
+            //switche.setToggleToFalse();
+
+            foreach(AltSwitchingPlatforms altswitche in altswitches){
+                //switche = switche.Object.GetComponent<SwitchingPlatforms>();
+                altswitche.setToggleToFalse();
+                print("set to false");
+            }
+
+            //AltSwitchingPlatforms[] altswitches = (AltSwitchingPlatforms[]) Object.FindObjectsOfType(typeof(AltSwitchingPlatforms));
+            //foreach(AltSwitchingPlatforms altswitche in altswitches){
+            //    //switche = switche.Object.GetComponent<SwitchingPlatforms>();
+            //    altswitche.setToggleToFalse();
+            //}
+            
+            //altswitche.setToggleToFalse();
             print(PlayerJump);
 
         }
