@@ -16,6 +16,10 @@ public class Thwomp : DamagePlayer
 
     private Vector3[] directions = new Vector3[4];
 
+    private void OnEnable() {
+        stop();
+    }
+
     private void Update() {
         if(attacking)
             transform.Translate(destination * Time.deltaTime * speed);
@@ -49,9 +53,11 @@ public class Thwomp : DamagePlayer
     }
 
     private void stop(){
-        
+        destination = transform.position;
+        attacking = false;
     }
     private void OnTriggerEnter2D(Collider2D collision) {
         base.OnTriggerEnter2D(collision);
+        stop();
     }
 }

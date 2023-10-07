@@ -42,4 +42,8 @@ public class Chandelier : DamagePlayer
         direction = -transform.up * range;
         
     }
+    private void OnTriggerEnter2D(Collider2D collision) {
+        base.OnTriggerEnter2D(collision);
+        Destroy();
+    }
 }
