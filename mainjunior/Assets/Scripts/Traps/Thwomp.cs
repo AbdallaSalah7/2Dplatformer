@@ -7,7 +7,7 @@ public class Thwomp : DamagePlayer
     [SerializeField] private float speed;
     [SerializeField] private float range;
     [SerializeField] private float checkDelay;
-    [SerializeField] private LayerMask player;
+    [SerializeField] private LayerMask PlayerLayer;
 
     private float checkTimer;
     private Vector3 destination;

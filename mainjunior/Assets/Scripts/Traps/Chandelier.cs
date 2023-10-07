@@ -7,7 +7,7 @@ public class Chandelier : DamagePlayer
     [SerializeField] private float speed;
     [SerializeField] private float range;
     [SerializeField] private float checkDelay;
-    [SerializeField] private LayerMask player;
+    [SerializeField] private LayerMask PlayerLayer;
     private float checkTimer;
     private Vector3 destination;
 
@@ -44,6 +44,6 @@ public class Chandelier : DamagePlayer
     }
     private void OnTriggerEnter2D(Collider2D collision) {
         base.OnTriggerEnter2D(collision);
-        Destroy();
+        //Destroy();
     }
 }
