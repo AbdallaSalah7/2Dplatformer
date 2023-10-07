@@ -208,7 +208,7 @@ MonoBehaviour:
   accelInAir: 1
   deccelInAir: 1
   doConserveMomentum: 1
-  jumpForce: 6
+  jumpForce: 4.5
   isWallJumping: 1
   wallPoint: {fileID: 5010785113022579547}
   slideWall:
