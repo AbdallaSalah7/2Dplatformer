@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chandelier : DamagePlayer
+public class Chandelier : EnemyDamage
 {
     [SerializeField] private float speed;
     [SerializeField] private float range;
