@@ -15,9 +15,9 @@ public class DamagePlayer : MonoBehaviour
     {
 
     }
-    private void OnTriggerEnter2D(Collider2D other)
+    public void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals("Player")) 
         {
             //FindObjectOfType<playerHealthController>().DealDamage();
             playerHealthController.instance.DealDamage();
