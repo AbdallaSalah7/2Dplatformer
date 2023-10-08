@@ -311,7 +311,7 @@ public class PlayerControl : MonoBehaviour
             LastOnGroundTime = 0;
 
             //RB.velocity = new Vector2(RB.velocity.x, jumpForce);
-            AudioManager.instance.playSFX(0);
+            //AudioManager.instance.playSFX(0);
             RB.AddForce(new Vector2(0, jumpForce*1.5f), ForceMode2D.Impulse);
 
             PlayerJump++;
