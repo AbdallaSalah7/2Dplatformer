@@ -87,8 +87,9 @@ public class BatEnemy : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            print ("Colliding with player");
             levelManager.instance.RespawnPlayer();
-            AudioManager.instance.playSFX(3);
+           
         }
     }
 
