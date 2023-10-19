@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,9 @@ using UnityEngine.Tilemaps;
 
 public class PlayerControl : MonoBehaviour
 {
-    public Rigidbody2D RB;
-    [SerializeField] private float maxSlopeAngle = 45f;
-
     public static PlayerControl instance;
+    public Rigidbody2D RB;
+
     private float horizontalInput;
 
     //GiveJump
@@ -24,7 +24,7 @@ public class PlayerControl : MonoBehaviour
     //public Transform stickyCheckPoint;
 
     //[SerializeField] LayerMask whatIsSticky;
-    private Animator anim;
+    public Animator anim;
     private SpriteRenderer theSr;
     public ParticleSystem dust;
     public GameObject DialogueBox;
@@ -70,6 +70,7 @@ public class PlayerControl : MonoBehaviour
     [Range(0f, 1)] public float deccelInAir = 1f;
     public bool doConserveMomentum = true;
     private Vector2 _moveInput;
+    public bool canRun = true;
 
 
     [Header("Jump")]
@@ -118,7 +119,6 @@ public class PlayerControl : MonoBehaviour
     public bool outOfStickJump = true;
     [SerializeField] private float stickjumpVelocity = 14f;
 
-
     // Start is called before the first frame update
     private void Awake()
     {
@@ -149,8 +149,8 @@ public class PlayerControl : MonoBehaviour
         switches = Object.FindObjectsOfType<SwitchingPlatforms>();
 
         altswitches = Object.FindObjectsOfType<AltSwitchingPlatforms>();
-            print("there are " + switches.Length);
-            
+        print("there are " + switches.Length);
+
 
     }//LasoOngroundtime
     void Update()
@@ -181,6 +181,11 @@ public class PlayerControl : MonoBehaviour
             {
                 createDust();
                 CheckDirectionToFace(_moveInput.x > 0);
+                anim.SetBool("CanMove", true);
+            }
+            else
+            {
+                anim.SetBool("CanMove", false);
             }
 
             //check if player is grounded
@@ -297,8 +302,6 @@ public class PlayerControl : MonoBehaviour
             Run(1);
 
         }
-        HandleSlopeMovement();
-
     }
 
     public void Jump()
@@ -312,11 +315,12 @@ public class PlayerControl : MonoBehaviour
 
             //RB.velocity = new Vector2(RB.velocity.x, jumpForce);
             //AudioManager.instance.playSFX(0);
-            RB.AddForce(new Vector2(0, jumpForce*1.5f), ForceMode2D.Impulse);
+            RB.AddForce(new Vector2(0, jumpForce * 1.5f), ForceMode2D.Impulse);
 
             PlayerJump++;
-
-            foreach(SwitchingPlatforms switche in switches){
+            anim.SetBool("CanMove", true);
+            foreach (SwitchingPlatforms switche in switches)
+            {
                 //switche = switche.Object.GetComponent<SwitchingPlatforms>();
                 switche.setToggleToFalse();
                 print("set to false");
@@ -332,7 +336,8 @@ public class PlayerControl : MonoBehaviour
             //}
             //switche.setToggleToFalse();
 
-            foreach(AltSwitchingPlatforms altswitche in altswitches){
+            foreach (AltSwitchingPlatforms altswitche in altswitches)
+            {
                 //switche = switche.Object.GetComponent<SwitchingPlatforms>();
                 altswitche.setToggleToFalse();
                 print("set to false");
@@ -343,7 +348,7 @@ public class PlayerControl : MonoBehaviour
             //    //switche = switche.Object.GetComponent<SwitchingPlatforms>();
             //    altswitche.setToggleToFalse();
             //}
-            
+
             //altswitche.setToggleToFalse();
             print(PlayerJump);
 
@@ -351,10 +356,11 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0)
         {
-            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease*0.7f);
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease * 0.7f);
         }
 
-        if(!isGrounded && RB.velocity.y < 0){
+        if (!isGrounded && RB.velocity.y < 0)
+        {
             RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force);
         }
     }
@@ -374,6 +380,7 @@ public class PlayerControl : MonoBehaviour
             wallJumpingCounter -= Time.deltaTime;
             isWallJumping = false;
         }
+
 
         if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
         {
@@ -456,7 +463,7 @@ public class PlayerControl : MonoBehaviour
         _trailRenderer.emitting = false;
         isDashing = false;
     }
-//check the code
+    //check the code
     private void Run(float lerpAmount)
     {
         //Calculate the direction we want to move in and our desired velocity
@@ -495,13 +502,18 @@ public class PlayerControl : MonoBehaviour
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-        if(!isGrounded){
+        if (!isGrounded)
+        {
             RB.AddForce(movement * Vector2.right * 0.5f, ForceMode2D.Force);
+
+
         }
-        else{
+        else
+        {
             RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
+
         }
-        
+
     }
 
     public void CheckDirectionToFace(bool isMovingRight)
@@ -572,46 +584,5 @@ public class PlayerControl : MonoBehaviour
     {
         dust.Play();
     }
-    /// <summary>
-    /// ////////////////////
-    /// Slopes
-    /// </summary> <summary>
-    /// 
-    /// </summary>
-    private void HandleSlopeMovement()
-    {
-        if (IsOnSlope())
-        {
-            float slopeAngle = CalculateSlopeAngle();
-            if (slopeAngle <= maxSlopeAngle)
-            {
-                // Adjust the player's velocity based on the slope angle.
-                float slopeModifier = Mathf.Cos(slopeAngle * Mathf.Deg2Rad);
-                RB.velocity = new Vector2(RB.velocity.x * slopeModifier, RB.velocity.y);
-            }
-        }
-    }
 
-    private bool IsOnSlope()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, whatIsGround);
-        if (hit.collider != null)
-        {
-            float angle = Vector2.Angle(hit.normal, Vector2.up);
-            return angle > 0f;
-        }
-        return false;
-    }
-
-    private float CalculateSlopeAngle()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f, whatIsGround);
-        if (hit.collider != null)
-        {
-            Vector2 groundNormal = hit.normal;
-            float slopeAngle = Vector2.Angle(groundNormal, Vector2.up);
-            return slopeAngle;
-        }
-        return 0f;
-    }
 }

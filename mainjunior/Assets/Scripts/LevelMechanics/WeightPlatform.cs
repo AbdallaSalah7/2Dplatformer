@@ -4,31 +4,26 @@ using UnityEngine;
 
 public class WeightPlatform : MonoBehaviour
 {
-    private bool shouldPlatformRotate;
+    public static WeightPlatform instance;
+    public bool shouldPlatformRotate;
 
     private float _platformLength;
-    private Transform Player;
+    public Transform Player;
+    [SerializeField] private GameObject PlayerA;
 
     [SerializeField] private LayerMask playerLayerMask;
     [SerializeField] private float rotationSpeed = 40f;
     [SerializeField] private float rotationMaxDegrees = 30f;
-    private BoxCollider2D _platformBoxCollider;
+    private PolygonCollider2D _platformBoxCollider;
     private float _heightCheckDistance = 0.1f;
 
-  
-    private void Awake() {
-        _platformBoxCollider = GetComponent<BoxCollider2D>();
-    }
-    /*private void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.CompareTag("Player"))
-        {
-            shouldPlatformRotate = true;
-            Player = col.gameObject.GetComponent<Transform>();
-        }
 
+    private void Awake()
+    {
+        _platformBoxCollider = GetComponent<PolygonCollider2D>();
+        instance = this;
     }
-*/
+
     private void OnCollisionEnter2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Player") && !shouldPlatformRotate)
@@ -36,16 +31,26 @@ public class WeightPlatform : MonoBehaviour
             shouldPlatformRotate = true;
             Player = col.gameObject.transform;
         }
+        if (col.gameObject.CompareTag("Player") || col.gameObject.name == "center")
+        {
+            PlayerControl.instance.anim.SetBool("CanMove", false);
+
+        }
+        else{
+             PlayerControl.instance.anim.SetBool("CanMove", true);
+        }
+           
+
     }
 
     private void OnCollisionExit2D(Collision2D col)
     {
         if (col.gameObject.CompareTag("Player") && shouldPlatformRotate)
         {
-            //shouldPlatformRotate = false;
+            PlayerControl.instance.anim.SetBool("CanMove", true);
         }
     }
-    private void Update()
+    private void FixedUpdate()
     {
         if (shouldPlatformRotate)
         {
@@ -63,17 +68,17 @@ public class WeightPlatform : MonoBehaviour
             int rotationDirection = PlayerRelativePosition.x < 0 ? 1 : -1;
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.AngleAxis(rotationMaxDegrees * rotationDirection, Vector3.forward), Time.deltaTime * rotationSpeed * rotationSpeedMultiplier);
         }
-        else if (transform.rotation.eulerAngles.z !=0)
+        else if (transform.rotation.eulerAngles.z != 0)
         {
             Debug.Log("Current Z Rotation: " + transform.rotation.eulerAngles.z);
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * rotationSpeed);
+            // Player.transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * rotationSpeed);
         }
 
     }
     private float CalculateRotationMultiplier(Vector3 PlayerRelativePosition)
     {
-
         int rotationDirection = PlayerRelativePosition.x < 0 ? 1 : -1;
         float rotationSpeedMultiplier = Mathf.Abs(Mathf.Clamp((PlayerRelativePosition.x * 2 / _platformLength) * rotationDirection, -1, 1));
         return rotationSpeedMultiplier;
