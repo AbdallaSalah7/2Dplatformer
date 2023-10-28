@@ -551,7 +551,7 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.tag == "Roommate")
         {
             DialogueBox.SetActive(true);
-            print("Player near roommaet");
+            print("Player near garden roommaet");
         }
         if (other.gameObject.name == "HallwayRoommate")
         {
