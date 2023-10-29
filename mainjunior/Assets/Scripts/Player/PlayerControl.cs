@@ -271,6 +271,13 @@ public class PlayerControl : MonoBehaviour
                 AudioManager.instance.playSFX(3);
                 //cooldownTimer += Time.deltaTime;
             }
+            if (Input.GetButtonDown("Shoot") && !isGrounded/*  && Input.GetButtonDown("Down") */)
+            {
+                // Call the Shoot method
+                Shootbelow();
+                AudioManager.instance.playSFX(3);
+                //cooldownTimer += Time.deltaTime;
+            }
         }
         if (isStickjump)
         {
@@ -420,6 +427,11 @@ public class PlayerControl : MonoBehaviour
         }
         Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
 
+    }
+    
+    void Shootbelow(){
+        Instantiate(bulletpre, LaunchOffset.position - new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
+        Jump();
     }
 
     public void GiveJump()
