@@ -442,7 +442,7 @@ public class PlayerControl : MonoBehaviour
     }
     
     void Shootbelow(){
-            bulletpre.dirdown = true; //what was the value before hmm
+            bulletpre.dirdown = true;
 
         Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         RB.AddForce(new Vector2(0, 2f * 1.5f), ForceMode2D.Impulse);
@@ -456,7 +456,7 @@ public class PlayerControl : MonoBehaviour
         {
             RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force);
         }
-        
+
         bulletpre.dirdown = false;
 
     }
