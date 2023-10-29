@@ -31,13 +31,17 @@ public class StickyBullet : MonoBehaviour
         transform.Translate(movementSpeed, 0, 0);*/
         //transform.position += -transform.right * Time.deltaTime * speed;
 
-        if(dir)
-            transform.position += transform.right * Time.deltaTime * speed;
-        else
-            transform.position += -transform.right * Time.deltaTime * speed;
-
         if(dirdown)
             transform.position += -transform.up * Time.deltaTime * speed;
+
+        else{
+
+            if(dir)
+                transform.position += transform.right * Time.deltaTime * speed;
+            else
+                transform.position += -transform.right * Time.deltaTime * speed;
+        }
+
 
     }
 

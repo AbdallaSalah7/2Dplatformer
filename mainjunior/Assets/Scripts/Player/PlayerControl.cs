@@ -119,7 +119,8 @@ public class PlayerControl : MonoBehaviour
     public bool outOfStickJump = true;
     [SerializeField] private float stickjumpVelocity = 14f;
     [SerializeField] bool ch2belowjump;
-    bool belowshoot = false;
+    //bool belowshoot = false;
+    bool jumpboost;
 
     // Start is called before the first frame update
     private void Awake()
@@ -193,8 +194,10 @@ public class PlayerControl : MonoBehaviour
             //check if player is grounded
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
 
-            if (isGrounded)
+            if (isGrounded){
                 LastOnGroundTime = coyoteTime; //if so sets the lastGrounded to coyoteTime
+                jumpboost = true;
+            }
 
             Jump();
             SlimeWallSlide();
@@ -266,21 +269,25 @@ public class PlayerControl : MonoBehaviour
 
         if (!PauseMenu.isPaused)
         {
-            if (Input.GetButtonDown("Shoot") && !belowshoot/* && cooldownTimer > attackCooldown*/)
+            
+            if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && jumpboost && Input.GetButton("Vertical") && Input.GetAxisRaw("Vertical") < Mathf.Epsilon)
+            {
+                // Call the Shoot method
+                jumpboost = false;
+                //belowshoot = true;
+                Shootbelow();
+                AudioManager.instance.playSFX(3);
+                //belowshoot = false;
+                
+
+                //cooldownTimer += Time.deltaTime;
+            }
+
+            else if (Input.GetButtonDown("Shoot")/*  && !belowshoot */ && !Input.GetButton("Vertical")/* && cooldownTimer > attackCooldown*/)
             {
                 // Call the Shoot method
                 Shoot();
                 AudioManager.instance.playSFX(3);
-                //cooldownTimer += Time.deltaTime;
-            }
-            if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && Input.GetButton("Vertical"))
-            {
-                // Call the Shoot method
-                belowshoot = true;
-                Shootbelow();
-                AudioManager.instance.playSFX(3);
-                belowshoot = false;
-
                 //cooldownTimer += Time.deltaTime;
             }
         }
@@ -422,7 +429,7 @@ public class PlayerControl : MonoBehaviour
 
         if (IsFacingRight)
         {
-            hitmap.SendMessage("SetBulletDirectionRight");
+            hitmap.SendMessage("SetBulletDirectionRight"); 
             bulletpre.dir = true;
         }
         else
@@ -435,9 +442,9 @@ public class PlayerControl : MonoBehaviour
     }
     
     void Shootbelow(){
-            bulletpre.dirdown = true;
+            bulletpre.dirdown = true; //what was the value before hmm
 
-        Instantiate(bulletpre, LaunchOffset.position - new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
+        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         Jump();
             bulletpre.dirdown = false;
 
