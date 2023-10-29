@@ -118,6 +118,8 @@ public class PlayerControl : MonoBehaviour
     private Vector2 stickjump;
     public bool outOfStickJump = true;
     [SerializeField] private float stickjumpVelocity = 14f;
+    [SerializeField] bool ch2belowjump;
+    bool belowshoot = false;
 
     // Start is called before the first frame update
     private void Awake()
@@ -264,18 +266,21 @@ public class PlayerControl : MonoBehaviour
 
         if (!PauseMenu.isPaused)
         {
-            if (Input.GetButtonDown("Shoot")/* && cooldownTimer > attackCooldown*/)
+            if (Input.GetButtonDown("Shoot") && !belowshoot/* && cooldownTimer > attackCooldown*/)
             {
                 // Call the Shoot method
                 Shoot();
                 AudioManager.instance.playSFX(3);
                 //cooldownTimer += Time.deltaTime;
             }
-            if (Input.GetButtonDown("Shoot") && !isGrounded/*  && Input.GetButtonDown("Down") */)
+            if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && Input.GetButton("Vertical"))
             {
                 // Call the Shoot method
+                belowshoot = true;
                 Shootbelow();
                 AudioManager.instance.playSFX(3);
+                belowshoot = false;
+
                 //cooldownTimer += Time.deltaTime;
             }
         }
@@ -434,6 +439,8 @@ public class PlayerControl : MonoBehaviour
 
         Instantiate(bulletpre, LaunchOffset.position - new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         Jump();
+            bulletpre.dirdown = false;
+
     }
 
     public void GiveJump()
