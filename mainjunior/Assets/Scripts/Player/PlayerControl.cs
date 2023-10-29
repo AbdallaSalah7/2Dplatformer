@@ -76,7 +76,7 @@ public class PlayerControl : MonoBehaviour
     [Header("Jump")]
     public float jumpForce = 4f;
     private float JumpRelease = 5f;
-    private float fallForce = 4.5f;
+    [SerializeField] float fallForce = 15f;
     public bool isWallJumping;
     private float wallJumpingDirection;
     private float WallJumpingTime = 0.2f;
@@ -159,7 +159,7 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         LastOnGroundTime -= Time.deltaTime;
-        _moveInput.x = Input.GetAxisRaw("Horizontal");
+        _moveInput.x = Input.GetAxisRaw("Horizontal"); 
 
         //--------------------------------------------------------STICKY-------------------------------------------------------------
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1, 1), 0, stickyWallLayer);
@@ -318,8 +318,7 @@ public class PlayerControl : MonoBehaviour
         if (!isWallJumping)
         {
 
-            Run(1);
-
+            Run(1); 
         }
     }
 
@@ -334,7 +333,8 @@ public class PlayerControl : MonoBehaviour
 
             //RB.velocity = new Vector2(RB.velocity.x, jumpForce);
             //AudioManager.instance.playSFX(0);
-            RB.AddForce(new Vector2(0, jumpForce * 1.5f), ForceMode2D.Impulse);
+
+            RB.AddForce(new Vector2(0, jumpForce * 1.5f), ForceMode2D.Impulse); 
 
             PlayerJump++;
             anim.SetBool("CanMove", true);
@@ -380,7 +380,7 @@ public class PlayerControl : MonoBehaviour
 
         if (!isGrounded && RB.velocity.y < 0)
         {
-            RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force);
+            RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force); //falling force
         }
     }
 
@@ -541,13 +541,13 @@ public class PlayerControl : MonoBehaviour
         float movement = speedDif * accelRate;
 
         //Convert this to a vector and apply to rigidbody
-        if (!isGrounded)
+        if (!isGrounded && Mathf.Abs(RB.velocity.x) > Mathf.Epsilon)
         {
-            RB.AddForce(movement * Vector2.right * 0.5f, ForceMode2D.Force);
-
+            RB.AddForce(movement * Vector2.right * 0.05f, ForceMode2D.Force); 
+            //movement *= 0.05f;  
 
         }
-        else
+        else //can i play celeste for abit just to check her movements 
         {
             RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
 
@@ -563,7 +563,7 @@ public class PlayerControl : MonoBehaviour
             //stores scale and flips the player along the x axis, 
             Vector3 scale = transform.localScale;
             scale.x *= -1;
-            transform.localScale = scale; //this flips the bakka sprite
+            transform.localScale = scale;
 
             IsFacingRight = !IsFacingRight;
         }
