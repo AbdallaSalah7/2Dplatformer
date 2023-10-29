@@ -445,8 +445,19 @@ public class PlayerControl : MonoBehaviour
             bulletpre.dirdown = true; //what was the value before hmm
 
         Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
-        Jump();
-            bulletpre.dirdown = false;
+        RB.AddForce(new Vector2(0, 2f * 1.5f), ForceMode2D.Impulse);
+
+        if (Input.GetButtonUp("Jump") && RB.velocity.y > 0)
+        {
+            RB.velocity = new Vector2(RB.velocity.x, RB.velocity.y / JumpRelease * 0.7f);
+        }
+
+        if (!isGrounded && RB.velocity.y < 0)
+        {
+            RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force);
+        }
+        
+        bulletpre.dirdown = false;
 
     }
 
