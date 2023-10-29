@@ -8,6 +8,7 @@ public class StickyBullet : MonoBehaviour
     GameObject impactEffect;
     private float speed = 8f;
     public bool dir; // 1true -> right 0 -> left
+    public bool dirdown;
     
     
 
@@ -34,6 +35,10 @@ public class StickyBullet : MonoBehaviour
             transform.position += transform.right * Time.deltaTime * speed;
         else
             transform.position += -transform.right * Time.deltaTime * speed;
+
+        if(dirdown)
+            transform.position += -transform.up * Time.deltaTime * speed;
+
     }
 
     void OnCollisionEnter2D(Collision2D other)

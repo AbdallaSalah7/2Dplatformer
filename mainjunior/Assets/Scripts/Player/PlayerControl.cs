@@ -430,6 +430,8 @@ public class PlayerControl : MonoBehaviour
     }
     
     void Shootbelow(){
+            bulletpre.dirdown = true;
+
         Instantiate(bulletpre, LaunchOffset.position - new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
         Jump();
     }
