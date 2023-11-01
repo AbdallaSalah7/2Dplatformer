@@ -47,7 +47,7 @@ public class Chandelier : EnemyDamage
         direction = -transform.up * range;
 
     }
-    private void OnTriggerEnter2D(Collider2D collision)
+    private new void OnTriggerEnter2D(Collider2D collision)
     {
         //base.OnTriggerEnter2D(collision);
 
@@ -56,6 +56,6 @@ public class Chandelier : EnemyDamage
             print("Colliding with player");
             levelManager.instance.RespawnPlayer();
         }
-        //Destroy();
+        Destroy(gameObject);
     }
 }

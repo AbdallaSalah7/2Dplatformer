@@ -56,7 +56,7 @@ public class Thwomp : EnemyDamage
         destination = transform.position;
         attacking = false;
     }
-    private void OnTriggerEnter2D(Collider2D collision) {
+    private new void OnTriggerEnter2D(Collider2D collision) {
         base.OnTriggerEnter2D(collision);
         stop();
     }
