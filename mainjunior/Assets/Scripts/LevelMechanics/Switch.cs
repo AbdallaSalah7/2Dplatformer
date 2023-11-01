@@ -6,7 +6,7 @@ public class Switch : MonoBehaviour
 {
     public GameObject objectToSwitch;
 
-    private SpriteRenderer theSR;
+    private SpriteRenderer UpSprite;
     public Sprite downSprite;
 
     private bool hasSwitched;
@@ -16,7 +16,7 @@ public class Switch : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        theSR = GetComponent<SpriteRenderer>();
+        UpSprite = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -31,17 +31,17 @@ public class Switch : MonoBehaviour
         {
             if (deactivateOnSwitch)
             {
-                objectToSwitch.SetActive(false);
+                
+                Destroy(objectToSwitch.gameObject, 0.5f);
+
             }
             else
             {
                 objectToSwitch.SetActive(true);
             }
 
-
-
-            theSR.sprite = downSprite;
+            UpSprite.sprite = downSprite;
             hasSwitched = true;
         }
-    }
+    } 
 }
