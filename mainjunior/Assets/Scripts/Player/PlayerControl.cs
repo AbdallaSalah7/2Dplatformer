@@ -619,6 +619,19 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if(coll.gameObject.tag == "elevator"){
+            transform.parent = coll.gameObject.transform;
+        }
+    }
+    void OnCollisionExit2D(Collision2D coll)
+    {
+        if (coll.gameObject.tag == "elevator")
+        {
+            transform.parent = null;
+        }
+    }
     void createDust()
     {
         dust.Play();

@@ -15,6 +15,7 @@ TagManager:
   - Roommate
   - Switch
   - SwitchAlt
+  - elevator
   layers:
   - Default
   - TransparentFX
