@@ -55,9 +55,9 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private Transform wallCheck;
     [SerializeField] private LayerMask NormalWallLayer;
 
-    [Header("Knockback")]
+    /* [Header("Knockback")]
     public float KnockBackLength = 0.25f;
-    public float KnockBackForce = 5;
+    public float KnockBackForce = 5; */
 
 
     [Header("run")]
@@ -177,8 +177,8 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if (KnockBackCounter <= 0)
-        {
+        /* if (KnockBackCounter <= 0)
+        { */
             //If moving left or right
             if (_moveInput.x != 0)
             {
@@ -249,7 +249,7 @@ public class PlayerControl : MonoBehaviour
                 wallJumpCoolDown += Time.deltaTime;
             }
 
-        }
+        /* }
         else
         {
             KnockBackCounter -= Time.deltaTime;
@@ -263,7 +263,7 @@ public class PlayerControl : MonoBehaviour
             {
                 player.velocity = new Vector2(KnockBackForce, player.velocity.y);
             }
-        }
+        } */
         anim.SetBool("isGrounded", isGrounded);
         anim.SetFloat("moveSpeed", Mathf.Abs(player.velocity.x));
 
