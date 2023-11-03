@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public PlayerControl pc;
     public Rigidbody2D RB;
     public Animator anim;
 
@@ -12,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
     //public bool IsRunning;
 
     [Header("Run")]
-	public float runMaxSpeed = 4.5f; //Target speed we want the player to reach.
+	public float runMaxSpeed = 8f; //Target speed we want the player to reach.
 	public float runAcceleration = 4.5f; //The speed at which our player accelerates to max speed, can be set to runMaxSpeed for instant acceleration down to 0 for none at all
 	[HideInInspector] public float runAccelAmount; //The actual force (multiplied with speedDiff) applied to the player.
 	public float runDecceleration = 4.5f; //The speed at which our player decelerates from their current speed, can be set to runMaxSpeed for instant deceleration down to 0 for none at all
@@ -23,7 +24,8 @@ public class PlayerMovement : MonoBehaviour
 	[Space(5)]
 	public bool doConserveMomentum = true;
 
-    private Vector2 _moveInput; 
+    [System.NonSerialized]
+    public Vector2 _moveInput; 
 
     [Header("Checks")] 
 	[SerializeField] private Transform _groundCheckPoint;
@@ -38,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake() {
         RB = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        pc = GetComponent<PlayerControl>();
     }
 
     private void Start() {
@@ -99,6 +102,13 @@ public class PlayerMovement : MonoBehaviour
 		else
 			accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount * accelInAir : runDeccelAmount * deccelInAir;
 
+        /* if ((pc.isJumping|| _isJumpFalling) && Mathf.Abs(RB.velocity.y) < pc.jumpHangTimeThreshold)
+		{
+            print("testttt");
+			accelRate *= pc.jumpHangAccelerationMult;
+			targetSpeed *= pc.jumpHangMaxSpeedMult; 
+		} */
+        
         if(doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0){
 			//Prevent any deceleration from happening, or in other words conserve are current momentum
 			//You could experiment with allowing for the player to slightly increae their speed whilst in this "state"
@@ -114,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void CheckDirectionToFace(bool isMovingRight)
 	{
-		if (isMovingRight != IsFacingRight){
+		if (isMovingRight != IsFacingRight && !pc.isWallJumping){
 
             //stores scale and flips the player along the x axis, 
 		    Vector3 scale = transform.localScale; 

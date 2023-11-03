@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour
 {
     public static PlayerControl instance;
     public Rigidbody2D RB;
+    public PlayerMovement playerMovement;
 
     private float horizontalInput;
 
@@ -35,7 +36,7 @@ public class PlayerControl : MonoBehaviour
 
     //------------------------------------CHECK VARIABLES------------------------------------------------
     //bool variables for checks if a certain action is possible 
-    public bool IsFacingRight { get; private set; }
+    //public bool IsFacingRight { get; private set; }
     public bool IsRunning { get; private set; }
 
     //----------------------------------TIMERS------------------------------------------------
@@ -60,16 +61,7 @@ public class PlayerControl : MonoBehaviour
     public float KnockBackForce = 5; */
 
 
-    [Header("run")]
-    private float runMaxSpeed = 3.5f;
-    [HideInInspector] public float runAccelAmount;
-    public float runAcceleration = 4.5f;
-    [HideInInspector] public float runDeccelAmount;
-    public float runDecceleration = 4.5f;
-    [Range(0f, 1)] public float accelInAir = 1f;
-    [Range(0f, 1)] public float deccelInAir = 1f;
-    public bool doConserveMomentum = true;
-    private Vector2 _moveInput;
+    
     public bool canRun = true;
 
 
@@ -84,6 +76,11 @@ public class PlayerControl : MonoBehaviour
     private float wallJumpingDuration = 0.4f;
     private Vector2 wallJumpingPower = new Vector2(4f, 8f);
     public static int PlayerJump = 0;
+    /* public bool isJumping;
+    public bool _isJumpFalling;
+    public float jumpHangAccelerationMult; 
+	public float jumpHangMaxSpeedMult;
+    public float jumpHangTimeThreshold; */
 
 
 
@@ -128,25 +125,21 @@ public class PlayerControl : MonoBehaviour
         RB = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         theSr = GetComponent<SpriteRenderer>();
-        _trailRenderer = GetComponent<TrailRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();//and here jump? so jump is h okay
         instance = this;
 
         boxCollider = GetComponent<BoxCollider2D>();
+        playerMovement = GetComponent<PlayerMovement>();
         //platform = GetComponent<PlatformMoving>();
 
     }
     void Start()
     {
-        IsFacingRight = true;
+        //IsFacingRight = true;
         playSticky = false;
-        runAccelAmount = (50 * runAcceleration) / runMaxSpeed;
-        runDeccelAmount = (50 * runDecceleration) / runMaxSpeed;
-        runAcceleration = Mathf.Clamp(runAcceleration, 0.01f, runMaxSpeed);
-        runDecceleration = Mathf.Clamp(runDecceleration, 0.01f, runMaxSpeed);
-
         jumpForce = 4.5f;
         JumpRelease = 5f;
-        runMaxSpeed = 8f;
+        
 
 
         switches = Object.FindObjectsOfType<SwitchingPlatforms>();
@@ -158,9 +151,6 @@ public class PlayerControl : MonoBehaviour
     }//LasoOngroundtime
     void Update()
     {
-        LastOnGroundTime -= Time.deltaTime;
-        _moveInput.x = Input.GetAxisRaw("Horizontal"); 
-
         //--------------------------------------------------------STICKY-------------------------------------------------------------
         Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1, 1), 0, stickyWallLayer);
         foreach (Collider2D collider in colliders)
@@ -177,19 +167,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        /* if (KnockBackCounter <= 0)
-        { */
-            //If moving left or right
-            if (_moveInput.x != 0)
-            {
-                createDust();
-                CheckDirectionToFace(_moveInput.x > 0);
-                anim.SetBool("CanMove", true);
-            }
-            else
-            {
-                anim.SetBool("CanMove", false);
-            }
+        
 
             //check if player is grounded
             isGrounded = Physics2D.OverlapCircle(groundCheckPoint.position, 0.2f, whatIsGround);
@@ -248,6 +226,7 @@ public class PlayerControl : MonoBehaviour
             {
                 wallJumpCoolDown += Time.deltaTime;
             }
+            
 
         /* }
         else
@@ -312,15 +291,6 @@ public class PlayerControl : MonoBehaviour
     }
 
 
-    private void FixedUpdate()
-    {
-
-        if (!isWallJumping)
-        {
-
-            Run(1); 
-        }
-    }
 
     public void Jump()
     {
@@ -328,7 +298,7 @@ public class PlayerControl : MonoBehaviour
         // Jumping
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-
+            //isJumping = true;
             LastOnGroundTime = 0;
 
             //RB.velocity = new Vector2(RB.velocity.x, jumpForce);
@@ -353,7 +323,7 @@ public class PlayerControl : MonoBehaviour
             //    switche.setToggleToFalse();
             //    print("set to false");
             //}
-            //switche.setToggleToFalse();
+            //switche.setToggleToFalse(); 
 
             foreach (AltSwitchingPlatforms altswitche in altswitches)
             {
@@ -372,6 +342,9 @@ public class PlayerControl : MonoBehaviour
             print(PlayerJump);
 
         }
+        /* else{
+            isJumping = false; check the isjumpuinng yabe 
+        } */
 
         if (Input.GetButtonUp("Jump") && RB.velocity.y > 0)
         {
@@ -382,6 +355,7 @@ public class PlayerControl : MonoBehaviour
         {
             RB.AddForce(Vector2.down * fallForce, ForceMode2D.Force); //falling force
         }
+        
     }
 
     private void WallJump()
@@ -410,7 +384,7 @@ public class PlayerControl : MonoBehaviour
             if (transform.localScale.x != wallJumpingDirection)
             {
 
-                IsFacingRight = !IsFacingRight;
+                playerMovement.IsFacingRight = !playerMovement.IsFacingRight;
                 Vector3 localScale = transform.localScale;
                 localScale.x *= -1f;
                 transform.localScale = localScale;
@@ -427,7 +401,7 @@ public class PlayerControl : MonoBehaviour
     void Shoot()
     {
 
-        if (IsFacingRight)
+        if (playerMovement.IsFacingRight)
         {
             hitmap.SendMessage("SetBulletDirectionRight"); 
             bulletpre.dir = true;
@@ -482,7 +456,7 @@ public class PlayerControl : MonoBehaviour
 
     private void SlimeWallSlide()
     {
-        if (isSlimeWalled() && !isGrounded && _moveInput.x != 0f)
+        if (isSlimeWalled() && !isGrounded && playerMovement._moveInput.x != 0f)
         {
             isWallSliding = true;
             player.velocity = new Vector2(player.velocity.x, Mathf.Clamp(player.velocity.y, -wallSlidingSpeed, float.MaxValue));
@@ -502,62 +476,11 @@ public class PlayerControl : MonoBehaviour
         _trailRenderer.emitting = false;
         isDashing = false;
     }
-    //check the code
-    private void Run(float lerpAmount)
+    
+
+    /* public void CheckDirectionToFace(bool isMovingRight)
     {
-        //Calculate the direction we want to move in and our desired velocity
-        float targetSpeed = _moveInput.x * runMaxSpeed;
-
-        //We can reduce are control using Lerp() this smooths changes to are direction and speed
-        //linearly interpolate between the current x velocity and target speed by lerpAmount, which is value in range [0, 1]
-        targetSpeed = Mathf.Lerp(RB.velocity.x, targetSpeed, lerpAmount); //lerp = 1f
-
-
-        //Calculate AccelRate
-        float accelRate;
-
-        //Gets an acceleration value based on if we are accelerating (includes turning) 
-        //or trying to decelerate (stop). As well as applying a multiplier if we're air borne (hung in air).
-        if (LastOnGroundTime > 0)
-        {
-            accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount : runDeccelAmount;
-        }
-        else
-        {
-            accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? runAccelAmount * accelInAir : runDeccelAmount * deccelInAir;
-        }
-
-        //Conserve Momentum
-        //We won't slow the player down if they are moving in their desired direction but at a greater speed than their maxSpeed
-        if (doConserveMomentum && Mathf.Abs(RB.velocity.x) > Mathf.Abs(targetSpeed) && Mathf.Sign(RB.velocity.x) == Mathf.Sign(targetSpeed) && Mathf.Abs(targetSpeed) > 0.01f && LastOnGroundTime < 0)
-        {
-            accelRate = 0;
-        }
-
-        //Calculate difference between current velocity and desired velocity
-        float speedDif = targetSpeed - RB.velocity.x;
-
-        //Calculate force along x-axis to apply to thr player
-        float movement = speedDif * accelRate;
-
-        //Convert this to a vector and apply to rigidbody
-        if (!isGrounded && Mathf.Abs(RB.velocity.x) > Mathf.Epsilon)
-        {
-            RB.AddForce(movement * Vector2.right * 0.05f, ForceMode2D.Force); 
-            //movement *= 0.05f;  
-
-        }
-        else //can i play celeste for abit just to check her movements 
-        {
-            RB.AddForce(movement * Vector2.right, ForceMode2D.Force);
-
-        }
-
-    }
-
-    public void CheckDirectionToFace(bool isMovingRight)
-    {
-        if (isMovingRight != IsFacingRight && !isWallJumping)
+        if (isMovingRight != playerMovement.IsFacingRight && !isWallJumping)
         {
 
             //stores scale and flips the player along the x axis, 
@@ -565,9 +488,9 @@ public class PlayerControl : MonoBehaviour
             scale.x *= -1;
             transform.localScale = scale;
 
-            IsFacingRight = !IsFacingRight;
+            playerMovement.IsFacingRight = !playerMovement.IsFacingRight;
         }
-    }
+    } */
 
     private bool onWall()
     {
