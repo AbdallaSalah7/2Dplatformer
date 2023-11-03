@@ -6,7 +6,7 @@ public class StickyBullet : MonoBehaviour
 {
     public float lifetime = 2f;
     GameObject impactEffect;
-    private float speed = 8f;
+    private float speed = 9.5f;
     public bool dir; // 1true -> right 0 -> left
     public bool dirdown;
     
