@@ -55,7 +55,8 @@ public class Elevator : MonoBehaviour
         }
         else
         {
-            elevator.color = Color.yellow;
+            Color pinkColor = new Color(181f / 255f, 224f / 255f, 255f / 255f);
+            elevator.color = pinkColor;
         }
     }
 }
