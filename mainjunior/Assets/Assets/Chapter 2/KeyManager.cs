@@ -31,7 +31,8 @@ public class KeyManager : MonoBehaviour
         {
             isPickedUp = true;
             door.GetComponent<door>().KeyPickedUp = true;
-            
         }
+
     }
+
 }
