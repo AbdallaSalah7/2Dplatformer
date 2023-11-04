@@ -199,6 +199,13 @@ public class playerPhysicsMovements : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+		//Check game paused
+		if(PauseMenu.isPaused){
+			return;
+		}
+
+
 		//Timers update------------------------------------------------------
         LastPressedJumpTime -= Time.deltaTime;
 		LastOnGroundTime -= Time.deltaTime;
@@ -211,7 +218,8 @@ public class playerPhysicsMovements : MonoBehaviour
             StickyWall stickyWall = collider.GetComponent<StickyWall>();
             if (stickyWall != null && stickyWall.isSticky)
             {
-                RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall
+				print("test");
+                RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall sure
                 break;
 			}
 		}
@@ -332,7 +340,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		 }
 
 		//Check below shooting input
-        if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && jumpboost && Input.GetButton("Vertical") && Input.GetAxisRaw("Vertical") < Mathf.Epsilon)
+        if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && jumpboost  && (Input.GetButton("Vertical") || Input.GetAxis("Vertical") < 0) && Input.GetAxisRaw("Vertical") < Mathf.Epsilon)
             {
 
                 // Call the Shoot method
@@ -420,6 +428,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
 			}
 	}
+
 
 	//Dash
 	public void Dash(){
@@ -583,23 +592,17 @@ public class playerPhysicsMovements : MonoBehaviour
     
     void Shoot()
     {
-    	Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-    	Vector2 direction = ((Vector2)mousePos - (Vector2)transform.position).normalized;
-    	GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-    	
-
-		if((mousePos.x - transform.position.x) > 0){
-
-			hitmap.SendMessage("SetBulletDirectionRight");
-		}
-		else if((mousePos.x - transform.position.x) < 0){
-
-			hitmap.SendMessage("SetBulletDirectionLeft");
-
-		}
-
-
-		bullet.GetComponent<Rigidbody2D>().velocity = direction * 7f;
+    	if (IsFacingRight)
+        {
+            hitmap.SendMessage("SetBulletDirectionRight"); 
+            bulletpre.dir = true;
+        }
+        else
+        {
+            hitmap.SendMessage("SetBulletDirectionLeft");
+            bulletpre.dir = false;
+        }
+        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
 
     }//end of Shoot()
 
