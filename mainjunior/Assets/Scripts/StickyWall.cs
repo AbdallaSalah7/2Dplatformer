@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.Universal.Light2D;
 public class StickyWall : MonoBehaviour
 {
     //its here 
-    public bool isSticky = false; //want meeting? u free? yea ? ok if u want no if you want yea tmam wait wait phone call take your time 
+    public bool isSticky = false;
     //public Sprite stickySprite;
     public float stickTime = 2f;
     private Tilemap stickyMap;
@@ -122,19 +122,19 @@ public class StickyWall : MonoBehaviour
         isSticky = false;
     } */
 
-    public void OnTriggerStay2D(Collider2D other) {
+    /* public void OnTriggerStay2D(Collider2D other) {
         if (other.gameObject.CompareTag("Player")){
-            print("enter");
+            //print("enter");
 
             if(Input.GetButtonDown("Jump")){
-                isSticky = false;
-                other.gameObject.SendMessage("GiveJump");
-                print("test");
+                //isSticky = false;
+                other.gameObject.SendMessage("Jump");
+                //print("test");
                 
             }
 
         }
-    }
+    } */
 }
 
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEditorInternal.Profiling;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -20,6 +21,8 @@ public class playerPhysicsMovements : MonoBehaviour
     public bool IsFacingRight { get; private set; }
 	public bool IsJumping { get; private set; }
     public bool IsRunning { get; private set; }
+	public bool IsWallJumping { get; private set; }
+	public bool IsSliding { get; private set; }
     private bool _isJumpCut;
 	private bool _isJumpFalling;
 
@@ -27,12 +30,15 @@ public class playerPhysicsMovements : MonoBehaviour
     //----------------------------------TIMERS------------------------------------------------
     //used for coyote time check. It is set to coyote time when player is grounded, otherwise when jumping or in air it starts countdown by Time.deltaTime each frame
     public float LastOnGroundTime { get; private set; }
+	public float LastOnWallTime { get; private set; }
+	public float LastOnWallRightTime { get; private set; }
+	public float LastOnWallLeftTime { get; private set; }
 
     //used for jump buffering check. It is set to buffer time threshold when pressing jump key, otherwise is decremented each frame by Time.deltaTime
     public float LastPressedJumpTime { get; private set; }
 
 
-	//references for explanation: 
+	//references for explanation:
     //https://youtu.be/RFix_Kg2Di0
     //Coyote time: allow player to jump, for short amount of time after leaving the ground
     //Jump buffering: buffers player's jump and executes as soon as they touch the ground within short amount of time,
@@ -140,6 +146,9 @@ public class playerPhysicsMovements : MonoBehaviour
     public bool playSticky;
     public bool outOfStickJump = true;
 	public bool jumpboost;
+	public float slideSpeed;
+	public float slideAccel;
+
 	[Space(5)]
 
 
@@ -207,21 +216,25 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 		//Timers update------------------------------------------------------
-        LastPressedJumpTime -= Time.deltaTime;
-		LastOnGroundTime -= Time.deltaTime;
+        LastOnGroundTime -= Time.deltaTime;
+		LastOnWallTime -= Time.deltaTime;
+		LastOnWallRightTime -= Time.deltaTime;
+		LastOnWallLeftTime -= Time.deltaTime;
+		LastPressedJumpTime -= Time.deltaTime;
 
 
         //Sticky code here
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f, stickyWallLayer);
+		//Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f, stickyWallLayer);
+		Collider2D[] colliders = Physics2D.OverlapBoxAll(transform.position, new Vector2(1, 1), 0, stickyWallLayer);
         foreach (Collider2D collider in colliders)
         {
             StickyWall stickyWall = collider.GetComponent<StickyWall>();
-            if (stickyWall != null && stickyWall.isSticky)
+            /* if (stickyWall != null && stickyWall.isSticky)
             {
-				print("test");
+				//print("test");
                 RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall sure
-                break;
-			}
+                break; 
+			} */
 		}
 
 		//COLLECT ALL INPUTS----------------------------
@@ -236,6 +249,10 @@ public class playerPhysicsMovements : MonoBehaviour
         //JUMP CHECKS-----------------------------------
 		JumpCheck();
 
+
+
+		//SLIDE CHECK-------------------------------------
+		SlideCheck();
 
 
 
@@ -254,6 +271,9 @@ public class playerPhysicsMovements : MonoBehaviour
     private void FixedUpdate(){
 
         Run(1);
+
+		if (IsSliding)
+			Slide();
     }
 
 
@@ -266,7 +286,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 
-    //---------------------------------------FUNCTIONS--------------------------------------boo
+    //---------------------------------------FUNCTIONS--------------------------------------
     public void SetGravityScale(float scale)
 	{
 		RB.gravityScale = scale;
@@ -300,7 +320,15 @@ public class playerPhysicsMovements : MonoBehaviour
 
     public bool InAirPlayer() {
 
-		return IsJumping || _isJumpFalling;
+		return IsJumping || _isJumpFalling; 
+	}
+
+	public bool CanSlide()
+    {
+		if (!IsJumping && LastOnGroundTime <= 0)
+			return true;
+		else
+			return false;
 	}
 
 
@@ -429,6 +457,14 @@ public class playerPhysicsMovements : MonoBehaviour
 			}
 	}
 
+	public void SlideCheck(){
+		
+		if (CanSlide() && Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, stickyWallLayer)) 
+			IsSliding = true;
+		else
+			IsSliding = false;
+	}
+
 
 	//Dash
 	public void Dash(){
@@ -455,7 +491,11 @@ public class playerPhysicsMovements : MonoBehaviour
 
 	public void GravityCheck(){
 
-		if (RB.velocity.y < 0 && moveInput.y < 0)
+		if (IsSliding)
+		{
+			SetGravityScale(0);
+		}
+			else if (RB.velocity.y < 0 && moveInput.y < 0)
 			{
                 //runAccelAmount;
 				//Much higher gravity if holding down
@@ -587,6 +627,21 @@ public class playerPhysicsMovements : MonoBehaviour
 		#endregion
 
 	}//end of Jump()
+
+
+
+	private void Slide()
+	{
+		//Works the same as the Run but only in the y-axis
+		//THis seems to work fine, buit maybe you'll find a better way to implement a slide into this system
+		float speedDif = slideSpeed - RB.velocity.y;	
+		float movement = speedDif * slideAccel;
+		//So, we clamp the movement here to prevent any over corrections (these aren't noticeable in the Run)
+		//The force applied can't be greater than the (negative) speedDifference * by how many times a second FixedUpdate() is called. For more info research how force are applied to rigidbodies.
+		movement = Mathf.Clamp(movement, -Mathf.Abs(speedDif)  * (1 / Time.fixedDeltaTime), Mathf.Abs(speedDif) * (1 / Time.fixedDeltaTime));
+
+		RB.AddForce(movement * Vector2.up);
+	}
 
 
     
