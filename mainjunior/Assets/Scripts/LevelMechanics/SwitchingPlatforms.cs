@@ -15,11 +15,11 @@ public class SwitchingPlatforms : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayerControl.PlayerJump % 2 == 0 && isToggle == false){
-            print(PlayerControl.PlayerJump);
+        if(playerPhysicsMovements.playerJumpCounter % 2 == 0 && isToggle == false){
+            //print(playerPhysicsMovements.playerJumpCounter);
             TogglePlatform();
         }
-        else if(PlayerControl.PlayerJump % 2 != 0 && isToggle == false){
+        else if(playerPhysicsMovements.playerJumpCounter % 2 != 0 && isToggle == false){
             TogglePlatform();
         }
     }

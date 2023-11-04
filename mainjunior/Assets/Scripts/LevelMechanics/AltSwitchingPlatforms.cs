@@ -19,10 +19,10 @@ public class AltSwitchingPlatforms : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(PlayerControl.PlayerJump % 2 == 0 && isToggle == false){
+        if(playerPhysicsMovements.playerJumpCounter % 2 == 0 && isToggle == false){
             TogglePlatform();
         }
-        else if(PlayerControl.PlayerJump % 2 != 0 && isToggle == false){
+        else if(playerPhysicsMovements.playerJumpCounter % 2 != 0 && isToggle == false){
             TogglePlatform();
         }
     }

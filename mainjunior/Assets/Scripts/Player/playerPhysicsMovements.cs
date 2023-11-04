@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using UnityEditorInternal.Profiling;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -9,6 +11,8 @@ public class playerPhysicsMovements : MonoBehaviour
     #region COMPONENTS
     public Rigidbody2D RB;
 	public Animator anim;
+	private SpriteRenderer theSr;
+	public static playerPhysicsMovements instance;
 	#endregion
 
     //------------------------------------CHECK VARIABLES------------------------------------------------
@@ -57,6 +61,8 @@ public class playerPhysicsMovements : MonoBehaviour
     public float jumpHeight = 3f; //Height of the player's jump
 	public float jumpTimeToApex = 0.5f; //Time between applying the jump force and reaching the desired jump height. These values also control the player's gravity and jump force.
 	public float jumpForce = 12f; //The actual force applied (upwards) to the player when they jump.
+	private bool isGrounded;
+	public static int playerJumpCounter;
 
 
     public float jumpHangTimeThreshold = 0f; //Speeds (close to 0) where the player will experience extra "jump hang". The player's velocity.y is closest to 0 at the jump's apex (think of the gradient of a parabola or quadratic function)
@@ -64,7 +70,7 @@ public class playerPhysicsMovements : MonoBehaviour
     [Range(0f, 1)] public float jumpHangGravityMult = 1f;  //Reduces gravity while close to the apex (desired max height) of the jump
     public float jumpHangAccelerationMult = 1f; 
 	public float jumpHangMaxSpeedMult = 1f; 
-
+	
 
 
 
@@ -72,7 +78,6 @@ public class playerPhysicsMovements : MonoBehaviour
     //----------------------------------------INPUT---------------------------------------
     private Vector2 moveInput;
 	
-
 
     //--------------------------------------GRAVITY-----------------------------------------------
 	[Header("Gravity")]
@@ -98,7 +103,7 @@ public class playerPhysicsMovements : MonoBehaviour
     [Header("Checks")] 
 	[SerializeField] private Transform groundCheckPoint;
 	//Size of groundCheck depends on the size of your character generally you want them slightly small than width (for ground) and height (for the wall check)
-	[SerializeField] private Vector2 groundCheckSize = new Vector2(0.49f, 0.03f);
+	[HideInInspector][SerializeField] private Vector2 groundCheckSize = new Vector2(0.49f, 0.03f);
 	[Space(5)]
 	[SerializeField] private Transform frontWallCheckPoint;
 	[SerializeField] private Transform backWallCheckPoint;
@@ -110,21 +115,65 @@ public class playerPhysicsMovements : MonoBehaviour
     [Header("Layers & Tags")]
 	[SerializeField] private LayerMask _groundLayer;
     public LayerMask stickyWallLayer;
-    public GameObject bulletPrefab;
-
 	public Tilemap hitmap;
 
+
+	//--------------------------------------PLATFORM MECHANICS--------------------------------------------
+	[Header("Mechanics")]
+	[SerializeField] private MovingPlatform MovePlatform;
+	private SwitchingPlatforms[] switches;
+    private AltSwitchingPlatforms[] altswitches;
+	public ParticleSystem dust;
+	public GameObject DialogueBox;
+    public GameObject HallwayDialogueBox;
+	[Space(5)]
+
+	//------------------------------------------STICKY-----------------------------------------------------
+	[Header("Sticky")]
+	[SerializeField] private float stickjumpVelocity = 14f;
+    [SerializeField] bool ch2belowjump;
+	public GameObject bulletPrefab;
+	public StickyBullet bulletpre;
+    public StickyWall _stickywall;
+    public Transform LaunchOffset;
+	private Vector2 stickjump;
+    public bool playSticky;
+    public bool outOfStickJump = true;
+	public bool jumpboost;
+	[Space(5)]
+
+
+	//---------------------------------------------DASH-----------------------------------------------------
+	[Header("Dash")]
+	[SerializeField] private float dashingVelocity = 14f;
+    [SerializeField] private float dashingTime = 0.5f;
+    private Vector2 dashingDir;
+    private bool isDashing;
+    private bool canDash = true;
+    private TrailRenderer _trailRenderer;
+    private bool isStickjump;
+
+
+	//--------------------------------------INITIAL FUNCTIONS-----------------------------------------------
     private void Awake()
 	{
 		RB = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
+		theSr = GetComponent<SpriteRenderer>();
+        _trailRenderer = GetComponent<TrailRenderer>();//and here jump? so jump is h okay
+        instance = this;
 	}
+
 
 	private void Start()
 	{
-		
+		//Ensuring important variables are initialized 
 		IsFacingRight = true;
+		playSticky = false;
+		isGrounded = true;
+		playerJumpCounter = 0;
 
+		//Physics calculations for gravity, run and jump
         gravityStrength = -(2 * jumpHeight) / (jumpTimeToApex * jumpTimeToApex);
         gravity = gravityStrength / Physics2D.gravity.y;
 
@@ -138,11 +187,23 @@ public class playerPhysicsMovements : MonoBehaviour
 
         
         SetGravityScale(gravity);
+
+		//Initializing arrays of Switching platforms available in the scene
+		switches = Object.FindObjectsOfType<SwitchingPlatforms>();
+
+        altswitches = Object.FindObjectsOfType<AltSwitchingPlatforms>();
 	}
+
+
 
     // Update is called once per frame
     void Update()
     {
+		//Timers update------------------------------------------------------
+        LastPressedJumpTime -= Time.deltaTime;
+		LastOnGroundTime -= Time.deltaTime;
+
+
         //Sticky code here
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.1f, stickyWallLayer);
         foreach (Collider2D collider in colliders)
@@ -155,8 +216,9 @@ public class playerPhysicsMovements : MonoBehaviour
 			}
 		}
 
-
+		//COLLECT ALL INPUTS----------------------------
         CollectInput();
+
 
         //COLLISIONS CHECK------------------------------
 		CollisionChecks();
@@ -168,8 +230,14 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 
+
         //GRAVITY CHECKS------------------------------------
 		GravityCheck();
+
+
+
+		//ANIMATION CHECKS----------------------------------
+		AnimCheck();
 
     }
 
@@ -184,8 +252,8 @@ public class playerPhysicsMovements : MonoBehaviour
     private void LateUpdate() {
 
         //set animations
-        anim.SetBool("isRunning", (InAirPlayer() ? false : IsRunning));
-        anim.SetBool("isJumping", InAirPlayer());
+        //anim.SetBool("isRunning", InAirPlayer() ? false : IsRunning);
+        //anim.SetBool("isJumping", InAirPlayer());
     }
 
 
@@ -211,7 +279,7 @@ public class playerPhysicsMovements : MonoBehaviour
 	}
 
 
-    //CHECKS IF ENABLE MOVEMENTS---------------------------------------------------------
+    //---------------------------------CHECKS IF ENABLE MOVEMENTS---------------------------------------------------------
     public bool CanRun() {
 
 		return !IsJumping && !_isJumpFalling;
@@ -230,7 +298,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
     
 
-	//MAIN CHECK FUNCTIONS IN UPDATE-----------------------------------------------------
+	//----------------------------------MAIN CHECK FUNCTIONS IN UPDATE-----------------------------------------------------
     private void CollectInput(){
 
         moveInput.x = Input.GetAxisRaw("Horizontal");
@@ -263,14 +331,45 @@ public class playerPhysicsMovements : MonoBehaviour
 		 	    _isJumpCut = true;
 		 }
 
+		//Check below shooting input
+        if (Input.GetButtonDown("Shoot") && !isGrounded && ch2belowjump && jumpboost && Input.GetButton("Vertical") && Input.GetAxisRaw("Vertical") < Mathf.Epsilon)
+            {
 
-        if (Input.GetKeyDown(KeyCode.S))
-    	{
-        	// Call the Shoot method
-        	Shoot();
-    	}
+                // Call the Shoot method
+                jumpboost = false;
+                //belowshoot = true;
+                Shootbelow();
+                AudioManager.instance.playSFX(3);
+                //belowshoot = false;  
+            }
 
-    }
+		//Check shooting input 
+		else if (Input.GetButtonDown("Shoot")&& !Input.GetButton("Vertical"))
+            {
+
+                // Call the Shoot method
+                Shoot();
+                AudioManager.instance.playSFX(3);
+            }
+
+		//check dashing
+		if (Input.GetButtonDown("Dash") && canDash)
+            {
+                isDashing = true;
+                canDash = false;
+                _trailRenderer.emitting = true;
+				Dash();
+            }
+		
+		//Dashing velocity
+		if (isDashing)
+            {
+                RB.velocity = dashingDir.normalized * dashingVelocity;
+                return;
+            }
+
+    }//end of collectInput()
+
 
 
 	public void CollisionChecks(){
@@ -281,9 +380,18 @@ public class playerPhysicsMovements : MonoBehaviour
 			{
 
 				LastOnGroundTime = coyoteTime; //if so sets the lastGrounded to coyoteTime
+				jumpboost = true;
+				canDash = true;
+				isGrounded = true;
             }
         }
+		else{
+
+			isGrounded = false;
+		}
 	}
+
+
 
 
 	public void JumpCheck(){
@@ -311,6 +419,27 @@ public class playerPhysicsMovements : MonoBehaviour
 				Jump();
 
 			}
+	}
+
+	//Dash
+	public void Dash(){
+
+		dashingDir = new Vector2(Input.GetAxisRaw("Horizontal"), 0);
+
+                if (dashingDir == Vector2.zero)
+                {
+                    dashingDir = new Vector2(transform.localScale.x, 0);
+                }
+                StartCoroutine(StopDashing());
+	}
+
+
+	//Start coroutine to fade away dash 
+	public IEnumerator StopDashing(){
+
+		yield return new WaitForSeconds(dashingTime);
+        _trailRenderer.emitting = false;
+        isDashing = false;
 	}
 
 
@@ -345,13 +474,32 @@ public class playerPhysicsMovements : MonoBehaviour
 			else
 			{
 				//Default gravity if standing on a platform or moving upwards
-				SetGravityScale(gravity);
+				SetGravityScale(gravity); 
 			}
 	}
 
 
+	//Animations 
+	public void AnimCheck(){
+		
+		//Jump animation
+		anim.SetBool("isGrounded", isGrounded);
+		
+		//Run animation
+		//anim.SetBool("isRunning", InAirPlayer() ? false : IsRunning);
+        anim.SetFloat("moveSpeed", Mathf.Abs(RB.velocity.x));
+	}
 
-	//ACTION MOVEMENTS-----------------------------------------------------------------------
+
+	//Create dust particles
+	void createDust()
+    {
+        dust.Play();
+    }
+
+
+
+	//--------------------------------------------------------ACTION MOVEMENTS-----------------------------------------------------------------------
     private void Run(float lerpAmount)
 	{
 		//Calculate the direction we want to move in and our desired velocity
@@ -403,11 +551,17 @@ public class playerPhysicsMovements : MonoBehaviour
 		 * RB.velocity = new Vector2(RB.velocity.x + (Time.fixedDeltaTime  * speedDif * accelRate) / RB.mass, RB.velocity.y);
 		 * Time.fixedDeltaTime is by default in Unity 0.02 seconds equal to 50 FixedUpdate() calls per second
 		*/
-	}
+	}//end of Run()
 
 
     private void Jump()
 	{
+		//increase jump count for switching platforms
+		playerJumpCounter++; 
+
+		//Switch all platforms in the scene
+		SwitchPlatforms();
+
 		//Ensures we can't call Jump multiple times from one press
 		LastPressedJumpTime = 0;
 		LastOnGroundTime = 0;
@@ -422,7 +576,10 @@ public class playerPhysicsMovements : MonoBehaviour
 
 		RB.AddForce(Vector2.up * force, ForceMode2D.Impulse);
 		#endregion
-	}
+
+	}//end of Jump()
+
+
     
     void Shoot()
     {
@@ -443,5 +600,123 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 		bullet.GetComponent<Rigidbody2D>().velocity = direction * 7f;
+
+    }//end of Shoot()
+
+
+
+	public void Shootbelow(){
+
+        bulletpre.dirdown = true;
+
+        Instantiate(bulletpre, LaunchOffset.position + new Vector3(0.6f, 0, 0)/* + rotatedOffset*/, transform.rotation);
+        
+		Jump();
+
+        bulletpre.dirdown = false;
+
+    }//end of Shootbelow()
+
+
+	public void SwitchPlatforms(){
+		
+		//SwitchPlatforms
+		foreach (SwitchingPlatforms switche in switches)
+            {
+                switche.setToggleToFalse();
+                print("set to false");
+            }
+
+
+		//AltSwitchPlatforms
+		foreach (AltSwitchingPlatforms altswitche in altswitches)
+            {
+                altswitche.setToggleToFalse();
+                print("set to false");
+            }
+	}//end of SwitchingPlatforms()
+
+
+
+
+
+	//------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------
+	
+	private void OnTriggerEnter2D(Collider2D other)
+    {
+
+		//Check overlapping with sticky
+        if (other.gameObject.CompareTag("SlimeLight"))
+        {
+            playSticky = true;
+            anim.SetBool("isStickySlime", playSticky);
+        }
+
+		//Check interacting with roommate
+        if (other.gameObject.tag == "Roommate")
+        {
+            DialogueBox.SetActive(true);
+            print("Player near garden roommaet");
+        }
+
+		//Check interacting with hallways roommate
+        if (other.gameObject.name == "HallwayRoommate")
+        {
+            HallwayDialogueBox.SetActive(true);
+            print("Player near roommaet");
+        }
+
     }
+
+
+	private void OnTriggerExit2D(Collider2D other)
+    {
+
+		//Check exiting the sticky
+        if (other.gameObject.CompareTag("SlimeLight"))
+        {
+            playSticky = false;
+            anim.SetBool("isStickySlime", playSticky);
+        }
+
+		//Exiting interaction with roommate
+        if (other.gameObject.tag == "Roommate")
+        {
+            DialogueBox.SetActive(false);
+        }
+
+		//Exiting interaction with hallways roommate
+        if (other.gameObject.name == "HallwayRoommate")
+        {
+            HallwayDialogueBox.SetActive(false);
+            print("Player far from roommaet");
+        }
+    }
+
+
+
+
+	//--------------------------------------------------------------COLLISIONS-------------------------------------------------------------------------------------
+
+	void OnCollisionEnter2D(Collision2D coll)
+    {
+
+		//Check interacting with elevator 
+        if(coll.gameObject.tag == "elevator"){
+            transform.parent = coll.gameObject.transform;
+        }
+    }
+
+
+	void OnCollisionExit2D(Collision2D coll)
+    {
+
+		//Exiting interaction with elevator
+        if (coll.gameObject.tag == "elevator")
+        {
+            transform.parent = null;
+        }
+    }
+
+	
 }
