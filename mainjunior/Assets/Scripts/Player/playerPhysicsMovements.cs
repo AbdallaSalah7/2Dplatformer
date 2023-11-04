@@ -319,13 +319,13 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
         //Check jump press down
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.J))
+        if(Input.GetButtonDown("Jump"))
         {
 			LastPressedJumpTime = jumpInputBufferTime;
         }
 
         //check jump release
-         if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.C) || Input.GetKeyUp(KeyCode.J))
+         if (Input.GetButtonUp("Jump"))
 		 {
 		 	if (IsJumping && RB.velocity.y > 0)
 		 	    _isJumpCut = true;
