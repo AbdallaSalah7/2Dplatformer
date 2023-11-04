@@ -4987,6 +4987,7 @@ GameObject:
   - component: {fileID: 4423299503177955416}
   - component: {fileID: 4949635322362310814}
   - component: {fileID: 5398746502933904735}
+  - component: {fileID: 7128318540526069623}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -5112,7 +5113,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7435585186798910973}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8aa3555b8c37c2940864287b11b2dac4, type: 3}
   m_Name: 
@@ -5353,7 +5354,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7435585186798910973}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4d2ec0083edbfd34ca27a5e3b51351e6, type: 3}
   m_Name: 
@@ -5389,6 +5390,71 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingHealth: 1
+--- !u!114 &7128318540526069623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7435585186798910973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9edd0a9e31a04a34da6c5d55cb0833a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RB: {fileID: 0}
+  anim: {fileID: 0}
+  runMaxSpeed: 4.5
+  runAcceleration: 4.5
+  runAccelAmount: 0
+  runDecceleration: 4.5
+  runDeccelAmount: 0
+  accelInAir: 1
+  deccelInAir: 1
+  doConserveMomentum: 1
+  jumpHeight: 3
+  jumpTimeToApex: 0.5
+  jumpForce: 12
+  jumpHangTimeThreshold: 0
+  jumpCutGravityMult: 3.5
+  jumpHangGravityMult: 1
+  jumpHangAccelerationMult: 1
+  jumpHangMaxSpeedMult: 1
+  gravity: 18
+  gravityStrength: 0
+  fastFallGravityMult: 2
+  fallGravityMult: 2
+  maxFastFallSpeed: 18
+  maxFallSpeed: 18
+  coyoteTime: 0.2
+  jumpInputBufferTime: 0.2
+  groundCheckPoint: {fileID: 7435585186522927884}
+  groundCheckSize: {x: 0.49, y: 0.03}
+  frontWallCheckPoint: {fileID: 1749998831424833588}
+  backWallCheckPoint: {fileID: 1749998831735652841}
+  wallCheckSize: {x: 0.5, y: 1}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 21760
+  stickyWallLayer:
+    serializedVersion: 2
+    m_Bits: 16384
+  hitmap: {fileID: 0}
+  MovePlatform: {fileID: 0}
+  dust: {fileID: 1749998831214520847}
+  DialogueBox: {fileID: 0}
+  HallwayDialogueBox: {fileID: 0}
+  stickjumpVelocity: 14
+  ch2belowjump: 0
+  bulletPrefab: {fileID: 2369842850242115381, guid: 009eeef230cf2ae46ba12cd99c6ef1ea, type: 3}
+  bulletpre: {fileID: 6254742008073575161, guid: 009eeef230cf2ae46ba12cd99c6ef1ea, type: 3}
+  _stickywall: {fileID: 0}
+  LaunchOffset: {fileID: 1749998830850906053}
+  playSticky: 0
+  outOfStickJump: 1
+  jumpboost: 0
+  dashingVelocity: 14
+  dashingTime: 0.5
 --- !u!1001 &1749998831769853427
 PrefabInstance:
   m_ObjectHideFlags: 0
