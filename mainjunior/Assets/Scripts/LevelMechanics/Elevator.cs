@@ -8,7 +8,7 @@ public class Elevator : MonoBehaviour
     [SerializeField] Transform elevatorSwitch;
     [SerializeField] Transform downpos;
     [SerializeField] Transform upperpos;
-
+    [SerializeField] SpriteRenderer elevator;
     public float speed;
     bool isElevatorDown = false;
     // Start is called before the first frame update
@@ -21,6 +21,7 @@ public class Elevator : MonoBehaviour
     void Update()
     {
         startElevator();
+        DisplayColor();
 
     }
     void startElevator()
@@ -44,6 +45,17 @@ public class Elevator : MonoBehaviour
         else
         {
             transform.position = Vector2.MoveTowards(transform.position, downpos.position, speed * Time.deltaTime);
+        }
+    }
+    void DisplayColor()
+    {
+        if (transform.position.y <= downpos.position.y || transform.position.y >= upperpos.position.y)
+        {
+            elevator.color = Color.white;
+        }
+        else
+        {
+            elevator.color = Color.yellow;
         }
     }
 }
