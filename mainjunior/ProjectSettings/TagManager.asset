@@ -16,6 +16,7 @@ TagManager:
   - Switch
   - SwitchAlt
   - elevator
+  - Key
   layers:
   - Default
   - TransparentFX
