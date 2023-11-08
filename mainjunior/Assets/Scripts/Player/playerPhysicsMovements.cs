@@ -130,8 +130,7 @@ public class playerPhysicsMovements : MonoBehaviour
 	private SwitchingPlatforms[] switches;
     private AltSwitchingPlatforms[] altswitches;
 	public ParticleSystem dust;
-	public GameObject DialogueBox;
-    public GameObject HallwayDialogueBox;
+	
 	[Space(5)]
 
 	//------------------------------------------STICKY-----------------------------------------------------
@@ -274,6 +273,12 @@ public class playerPhysicsMovements : MonoBehaviour
 
 		if (IsSliding)
 			Slide();
+
+		if(InkDialogueManager.GetInstance().dialogueIsPlaying)
+		{
+			//Freeze player movement
+			return;
+		}
     }
 
 
@@ -709,21 +714,6 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = true;
             anim.SetBool("isStickySlime", playSticky);
         }
-
-		//Check interacting with roommate
-        if (other.gameObject.tag == "Roommate")
-        {
-            DialogueBox.SetActive(true);
-            print("Player near garden roommaet");
-        }
-
-		//Check interacting with hallways roommate
-        if (other.gameObject.name == "HallwayRoommate")
-        {
-            HallwayDialogueBox.SetActive(true);
-            print("Player near roommaet");
-        }
-
     }
 
 
@@ -737,18 +727,6 @@ public class playerPhysicsMovements : MonoBehaviour
             anim.SetBool("isStickySlime", playSticky);
         }
 
-		//Exiting interaction with roommate
-        if (other.gameObject.tag == "Roommate")
-        {
-            DialogueBox.SetActive(false);
-        }
-
-		//Exiting interaction with hallways roommate
-        if (other.gameObject.name == "HallwayRoommate")
-        {
-            HallwayDialogueBox.SetActive(false);
-            print("Player far from roommaet");
-        }
     }
 
 
@@ -758,9 +736,9 @@ public class playerPhysicsMovements : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D coll)
     {
-
 		//Check interacting with elevator 
-        if(coll.gameObject.tag == "elevator"){
+        if(coll.gameObject.tag == "elevator")
+		{
             transform.parent = coll.gameObject.transform;
         }
     }
@@ -768,7 +746,6 @@ public class playerPhysicsMovements : MonoBehaviour
 
 	void OnCollisionExit2D(Collision2D coll)
     {
-
 		//Exiting interaction with elevator
         if (coll.gameObject.tag == "elevator")
         {

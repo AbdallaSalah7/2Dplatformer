@@ -457,7 +457,7 @@ MonoBehaviour:
     m_Start: 2.3166666666666633
     m_ClipIn: 0
     m_Asset: {fileID: 8313157402942227499}
-    m_Duration: 9.050000000000002
+    m_Duration: 8.433333333333335
     m_TimeScale: 1
     m_ParentTrack: {fileID: -2718007149118974344}
     m_EaseInDuration: 0
@@ -631,7 +631,25 @@ MonoBehaviour:
       m_RotationOrder: 4
     m_MixOutCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -658,7 +676,25 @@ MonoBehaviour:
     m_BlendOutDuration: -1
     m_MixInCurve:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -682,7 +718,7 @@ MonoBehaviour:
     m_Start: 9
     m_ClipIn: 0
     m_Asset: {fileID: 7845067939151422997}
-    m_Duration: 1.9499999999999993
+    m_Duration: 1.7499999999999982
     m_TimeScale: 1
     m_ParentTrack: {fileID: 391996566502182724}
     m_EaseInDuration: 0
@@ -775,7 +811,7 @@ MonoBehaviour:
     m_Start: 2.316666666666667
     m_ClipIn: 0
     m_Asset: {fileID: 1817493899986148889}
-    m_Duration: 9.049999999999999
+    m_Duration: 8.433333333333332
     m_TimeScale: 1
     m_ParentTrack: {fileID: 1298001294203544437}
     m_EaseInDuration: 0
