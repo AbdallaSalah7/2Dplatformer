@@ -36,7 +36,7 @@ public class BatEnemy : MonoBehaviour
         else
         {
 
-            if (Vector3.Distance(transform.position, PlayerControl.instance.transform.position) > distanceToAttackPlayer)
+            if (Vector3.Distance(transform.position, playerPhysicsMovements.instance.transform.position) > distanceToAttackPlayer)
             {
 
                 attackTarget = Vector3.zero;
@@ -68,7 +68,7 @@ public class BatEnemy : MonoBehaviour
 
                 if (attackTarget == Vector3.zero)
                 {
-                    attackTarget = PlayerControl.instance.transform.position;
+                    attackTarget = playerPhysicsMovements.instance.transform.position;
                 }
 
                 transform.position = Vector3.MoveTowards(transform.position, attackTarget, chaseSpeed * Time.deltaTime);

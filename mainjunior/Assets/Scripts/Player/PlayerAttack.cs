@@ -8,11 +8,11 @@ public class PlayerAttack : MonoBehaviour
     //[SerializeField] private float AttackCoolDown;
      [SerializeField] private Transform pencilPoint;
      [SerializeField] private GameObject[] pencils;
-    public PlayerControl playerControl;
+    public playerPhysicsMovements playerControl;
     //private float cooldownTimer = Mathf.Infinity;
     private void Awake()
     {
-        playerControl = GetComponent<PlayerControl>();
+        playerControl = GetComponent<playerPhysicsMovements>();
     }
     private void Update()
     {

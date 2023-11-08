@@ -8,6 +8,7 @@ public class Thwomp : EnemyDamage
     [SerializeField] private float range;
     [SerializeField] private float checkDelay;
     [SerializeField] private LayerMask PlayerLayer;
+    public Animator anim;
 
     private float checkTimer;
     private Vector3 destination;
@@ -18,6 +19,9 @@ public class Thwomp : EnemyDamage
 
     private void OnEnable() {
         stop();
+    }
+    private void Awake() {
+        anim = GetComponent<Animator>();
     }
 
     private void Update() {
@@ -38,6 +42,7 @@ public class Thwomp : EnemyDamage
             RaycastHit2D hit = Physics2D.Raycast(transform.position, directions[i], range, PlayerLayer);
 
             if(hit.collider != null && !attacking){
+            anim.SetBool("WakeUp", true);
             attacking = true;
             destination = directions[i];
             checkTimer = 0;

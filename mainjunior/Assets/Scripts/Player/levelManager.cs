@@ -30,14 +30,14 @@ public class levelManager : MonoBehaviour
     private IEnumerator RespwanCo()
     {
         //deactivate the player
-        PlayerControl.instance.gameObject.SetActive(false);
+        playerPhysicsMovements.instance.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(waitToReswamp);
 
-        PlayerControl.instance.gameObject.SetActive(true);
+        playerPhysicsMovements.instance.gameObject.SetActive(true);
 
         //set the player position to the stored spawn position
-        PlayerControl.instance.transform.position = checkPointController.instance.spawnPoint;
+        playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
 
         //playerHealthController.instance.currentHealth = playerHealthController.instance.maxHealth;
         //UIController.instance.updateHealthDisplay();

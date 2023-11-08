@@ -33,11 +33,11 @@ public class WeightPlatform : MonoBehaviour
         }
         if (col.gameObject.CompareTag("Player") || col.gameObject.name == "center")
         {
-            PlayerControl.instance.anim.SetBool("CanMove", false);
+            playerPhysicsMovements.instance.anim.SetBool("CanMove", false);
 
         }
         else{
-             PlayerControl.instance.anim.SetBool("CanMove", true);
+             playerPhysicsMovements.instance.anim.SetBool("CanMove", true);
         }
            
 
@@ -47,7 +47,7 @@ public class WeightPlatform : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Player") && shouldPlatformRotate)
         {
-            PlayerControl.instance.anim.SetBool("CanMove", true);
+            playerPhysicsMovements.instance.anim.SetBool("CanMove", true);
         }
     }
     private void FixedUpdate()

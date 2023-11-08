@@ -8,7 +8,7 @@ public class ProjectileEnemy : MonoBehaviour
     public float speed;
 
     private void Start() {
-        targetPos = FindObjectOfType<PlayerControl>().transform.position;
+        targetPos = FindObjectOfType<playerPhysicsMovements>().transform.position;
     }
 
     private void Update() {

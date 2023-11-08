@@ -17,6 +17,9 @@ public class Healthp : MonoBehaviour
         if(!dead){
             levelManager.instance.RespawnPlayer();
             dead = true;
+            startingHealth = 1;
+            dead = false;
         }
     }
+    
 }

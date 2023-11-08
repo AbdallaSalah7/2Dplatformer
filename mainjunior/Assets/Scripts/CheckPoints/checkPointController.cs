@@ -16,15 +16,9 @@ public class checkPointController : MonoBehaviour
     {
         // will find all the active checkpoints
         checkpoints = FindObjectsOfType<CheckPoint>();
-        spawnPoint = PlayerControl.instance.transform.position;
+        spawnPoint = playerPhysicsMovements.instance.transform.position;
     }
-    public void DeactivateCheckpoints()
-    {
-        for (int i = 0; i < checkpoints.Length; i++)
-        {
-            checkpoints[i].resetCheckPoint();
-        }
-    }
+    
     public void setSpawnPoint(Vector3 newSpawnPoint)
     {
         spawnPoint = newSpawnPoint;

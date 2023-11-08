@@ -21,7 +21,7 @@ public class BouncePad : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            PlayerControl.instance.player.velocity = new Vector2(PlayerControl.instance.player.velocity.x, bounceForce);
+            playerPhysicsMovements.instance.RB.velocity = new Vector2(playerPhysicsMovements.instance.RB.velocity.x, bounceForce);
             anim.SetTrigger("Bounce");
         }
     }
