@@ -5404,7 +5404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RB: {fileID: 0}
   anim: {fileID: 0}
-  runMaxSpeed: 8
+  runMaxSpeed: 4.5
   runAcceleration: 4.5
   runAccelAmount: 0
   runDecceleration: 4.5
@@ -5435,15 +5435,17 @@ MonoBehaviour:
   wallCheckSize: {x: 0.5, y: 1}
   _groundLayer:
     serializedVersion: 2
-    m_Bits: 5376
+    m_Bits: 21760
   stickyWallLayer:
     serializedVersion: 2
     m_Bits: 16384
   hitmap: {fileID: 0}
   MovePlatform: {fileID: 0}
   dust: {fileID: 1749998831214520847}
+  DialogueBox: {fileID: 0}
+  HallwayDialogueBox: {fileID: 0}
   stickjumpVelocity: 14
-  ch2belowjump: 1
+  ch2belowjump: 0
   bulletPrefab: {fileID: 2369842850242115381, guid: 009eeef230cf2ae46ba12cd99c6ef1ea, type: 3}
   bulletpre: {fileID: 6254742008073575161, guid: 009eeef230cf2ae46ba12cd99c6ef1ea, type: 3}
   _stickywall: {fileID: 0}
@@ -5451,8 +5453,6 @@ MonoBehaviour:
   playSticky: 0
   outOfStickJump: 1
   jumpboost: 0
-  slideSpeed: 0.7
-  slideAccel: 0.3
   dashingVelocity: 14
   dashingTime: 0.5
 --- !u!1001 &1749998831769853427
