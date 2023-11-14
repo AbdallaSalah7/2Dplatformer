@@ -26,7 +26,7 @@ public class InkDialogueManager : MonoBehaviour
 
     [SerializeField] private bool makePredictable;
 
-    private AudioSource audioSource;
+    // [SerializeField] private AudioSource audioSource;
 
     private Story currentStory;
     public bool dialogueIsPlaying { get; private set; }
@@ -34,9 +34,6 @@ public class InkDialogueManager : MonoBehaviour
     private bool canContinueToNextLine = false;
 
     private Coroutine displayLineCoroutine;
-
-
-
 
     private void Awake()
     {
@@ -163,6 +160,7 @@ public class InkDialogueManager : MonoBehaviour
             else
             {
                 // PlayDialogueSound(dialogueText.maxVisibleCharacters, dialogueText.text[dialogueText.maxVisibleCharacters]);
+                AudioManager.instance.playSFX(6);
                 dialogueText.maxVisibleCharacters++;
                 yield return new WaitForSeconds(typingSpeed);
             }

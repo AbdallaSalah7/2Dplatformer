@@ -28,13 +28,16 @@ public class Elevator : MonoBehaviour
     {
         if (Vector2.Distance(player.position, elevatorSwitch.position) < 0.5f && Input.GetButtonDown("Elevator"))
         {
+           
             print("Testttttt");
             if (transform.position.y <= downpos.position.y)
-            {
+            { 
+                AudioManager.instance.playSFX(5);
                 isElevatorDown = true;
             }
             else if (transform.position.y >= upperpos.position.y)
             {
+                AudioManager.instance.playSFX(5);
                 isElevatorDown = false;
             }
         }
