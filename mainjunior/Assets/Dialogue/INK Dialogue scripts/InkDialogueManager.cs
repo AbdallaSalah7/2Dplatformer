@@ -60,7 +60,7 @@ public class InkDialogueManager : MonoBehaviour
 
     }
 
- 
+
 
     private void Update()
     {
@@ -70,7 +70,7 @@ public class InkDialogueManager : MonoBehaviour
             return;
         }
 
-       
+
         if (canContinueToNextLine
             && Input.GetButton("Jump"))
         {
@@ -126,49 +126,22 @@ public class InkDialogueManager : MonoBehaviour
 
     private IEnumerator DisplayLine(string line)
     {
-        // set the text to the full line, but set the visible characters to 0
-        dialogueText.text = line;
+        dialogueText.text = "";
         dialogueText.maxVisibleCharacters = 0;
-        // hide items while text is typing
         continueIcon.SetActive(false);
-        // HideChoices();
-
         canContinueToNextLine = false;
 
-        bool isAddingRichTextTag = false;
-
-        // display each letter one at a time
-        foreach (char letter in line.ToCharArray())
+        for (int i = 0; i < line.Length; i++)
         {
-            // if the submit button is pressed, finish up displaying the line right away
-            if (Input.GetButton("Interact"))
-            {
-                dialogueText.maxVisibleCharacters = line.Length;
-                break;
-            }
+            dialogueText.text += line[i];
+            dialogueText.maxVisibleCharacters++;
 
-            // check for rich text tag, if found, add it without waiting
-            if (letter == '<' || isAddingRichTextTag)
-            {
-                isAddingRichTextTag = true;
-                if (letter == '>')
-                {
-                    isAddingRichTextTag = false;
-                }
-            }
-            // if not rich text, add the next letter and wait a small time
-            else
-            {
-                // PlayDialogueSound(dialogueText.maxVisibleCharacters, dialogueText.text[dialogueText.maxVisibleCharacters]);
-                AudioManager.instance.playSFX(6);
-                dialogueText.maxVisibleCharacters++;
-                yield return new WaitForSeconds(typingSpeed);
-            }
+            AudioManager.instance.playSFX(6);
+
+            yield return new WaitForSeconds(typingSpeed);
         }
 
-        // actions to take after the entire line has finished displaying
         continueIcon.SetActive(true);
-
         canContinueToNextLine = true;
     }
 
