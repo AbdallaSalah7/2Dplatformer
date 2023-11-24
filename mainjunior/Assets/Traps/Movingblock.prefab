@@ -169,9 +169,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  speed: 4
-  range: 5
+  speed: 2
+  range: 10
   checkDelay: 2
   PlayerLayer:
     serializedVersion: 2
     m_Bits: 512
+  anim: {fileID: 0}
