@@ -15,10 +15,13 @@ public class playerPhysicsMovements : MonoBehaviour
 	private SpriteRenderer theSr;
 	public static playerPhysicsMovements instance;
 	#endregion
+	
+	private bool playerInside = false;
+	public GameObject frame245;
 
-    //------------------------------------CHECK VARIABLES------------------------------------------------
-    //bool variables for checks if a certain action is possible 
-    public bool IsFacingRight { get; private set; }
+	//------------------------------------CHECK VARIABLES------------------------------------------------
+	//bool variables for checks if a certain action is possible 
+	public bool IsFacingRight { get; private set; }
 	public bool IsJumping { get; private set; }
     public bool IsRunning { get; private set; }
 	public bool IsWallJumping { get; private set; }
@@ -161,9 +164,12 @@ public class playerPhysicsMovements : MonoBehaviour
     private TrailRenderer _trailRenderer;
     private bool isStickjump;
 
+	//-----------------------------LETTERS----------------------------//
+	[Header("Visual Cue")]
+	[SerializeField] private GameObject visualCue;
 
 	//--------------------------------------INITIAL FUNCTIONS-----------------------------------------------
-    private void Awake()
+	private void Awake()
 	{
 		RB = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
@@ -207,9 +213,23 @@ public class playerPhysicsMovements : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+		if (playerInside && Input.GetButton("Interact"))
+		{
+			// Activate the "Frame 245" object
+			if (frame245 != null)
+			{
+				frame245.SetActive(true);
+			}
+		}
+		if (!playerInside)
+		{
+			// Activate the "Frame 245" object
+			
+				frame245.SetActive(false);
+			
+		}
 		//Check game paused
-		if(PauseMenu.isPaused){
+		if (PauseMenu.isPaused){
 			return;
 		}
 
@@ -704,7 +724,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 	//------------------------------------------------------------TRIGGERS-------------------------------------------------------------------------
-	
+
 	private void OnTriggerEnter2D(Collider2D other)
     {
 
@@ -714,9 +734,16 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = true;
             anim.SetBool("isStickySlime", playSticky);
         }
-    }
-
-
+		if (other.gameObject.CompareTag("Trigger"))
+		{
+			// Player has entered the triggered area
+			Debug.Log("Player entered the triggered area!");
+			playerInside = true;
+			visualCue.SetActive(true);
+			// Add your desired actions or code here
+		}
+	}
+	
 	private void OnTriggerExit2D(Collider2D other)
     {
 
@@ -726,8 +753,16 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = false;
             anim.SetBool("isStickySlime", playSticky);
         }
+		if (other.gameObject.CompareTag("Trigger"))
+		{
+			// Player has entered the triggered area
+			Debug.Log("Player exit the triggered area!");
+			playerInside = false;
+			visualCue.SetActive(false);
+			// Add your desired actions or code here
+		}
 
-    }
+	}
 
 
 

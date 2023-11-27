@@ -18,6 +18,8 @@ TagManager:
   - elevator
   - Key
   - Traps
+  - Box
+  - Trigger
   layers:
   - Default
   - TransparentFX
