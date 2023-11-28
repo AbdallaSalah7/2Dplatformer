@@ -213,21 +213,21 @@ public class playerPhysicsMovements : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-		if (playerInside && Input.GetButton("Interact"))
-		{
-			// Activate the "Frame 245" object
-			if (frame245 != null)
-			{
-				frame245.SetActive(true);
-			}
-		}
-		if (!playerInside)
-		{
-			// Activate the "Frame 245" object
+		// if (playerInside && Input.GetButton("Interact"))
+		// {
+		// 	// Activate the "Frame 245" object
+		// 	if (frame245 != null)
+		// 	{
+		// 		frame245.SetActive(true);
+		// 	}
+		// }
+		// if (!playerInside)
+		// {
+		// 	// Activate the "Frame 245" object
 			
-				frame245.SetActive(false);
+		// 		frame245.SetActive(false);
 			
-		}
+		// }
 		//Check game paused
 		if (PauseMenu.isPaused){
 			return;
@@ -734,14 +734,14 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = true;
             anim.SetBool("isStickySlime", playSticky);
         }
-		if (other.gameObject.CompareTag("Trigger"))
-		{
-			// Player has entered the triggered area
-			Debug.Log("Player entered the triggered area!");
-			playerInside = true;
-			visualCue.SetActive(true);
-			// Add your desired actions or code here
-		}
+		// if (other.gameObject.CompareTag("Trigger"))
+		// {
+		// 	// Player has entered the triggered area
+		// 	Debug.Log("Player entered the triggered area!");
+		// 	playerInside = true;
+		// 	visualCue.SetActive(true);
+		// 	// Add your desired actions or code here
+		// }
 	}
 	
 	private void OnTriggerExit2D(Collider2D other)
@@ -753,14 +753,14 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = false;
             anim.SetBool("isStickySlime", playSticky);
         }
-		if (other.gameObject.CompareTag("Trigger"))
-		{
-			// Player has entered the triggered area
-			Debug.Log("Player exit the triggered area!");
-			playerInside = false;
-			visualCue.SetActive(false);
-			// Add your desired actions or code here
-		}
+		// if (other.gameObject.CompareTag("Trigger"))
+		// {
+		// 	// Player has entered the triggered area
+		// 	Debug.Log("Player exit the triggered area!");
+		// 	playerInside = false;
+		// 	visualCue.SetActive(false);
+		// 	// Add your desired actions or code here
+		// }
 
 	}
 
