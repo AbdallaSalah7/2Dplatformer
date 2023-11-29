@@ -16,8 +16,6 @@ public class playerPhysicsMovements : MonoBehaviour
 	public static playerPhysicsMovements instance;
 	#endregion
 	
-	private bool playerInside = false;
-	public GameObject frame245;
 
 	//------------------------------------CHECK VARIABLES------------------------------------------------
 	//bool variables for checks if a certain action is possible 
@@ -165,8 +163,7 @@ public class playerPhysicsMovements : MonoBehaviour
     private bool isStickjump;
 
 	//-----------------------------LETTERS----------------------------//
-	[Header("Visual Cue")]
-	[SerializeField] private GameObject visualCue;
+
 
 	//--------------------------------------INITIAL FUNCTIONS-----------------------------------------------
 	private void Awake()
@@ -287,13 +284,15 @@ public class playerPhysicsMovements : MonoBehaviour
 
 
 
-    private void FixedUpdate(){
+    private void FixedUpdate()
+	{
 
         Run(1);
 
 		if (IsSliding)
 			Slide();
 
+			// does not work
 		if(InkDialogueManager.GetInstance().dialogueIsPlaying)
 		{
 			//Freeze player movement
@@ -734,14 +733,7 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = true;
             anim.SetBool("isStickySlime", playSticky);
         }
-		// if (other.gameObject.CompareTag("Trigger"))
-		// {
-		// 	// Player has entered the triggered area
-		// 	Debug.Log("Player entered the triggered area!");
-		// 	playerInside = true;
-		// 	visualCue.SetActive(true);
-		// 	// Add your desired actions or code here
-		// }
+
 	}
 	
 	private void OnTriggerExit2D(Collider2D other)
@@ -753,14 +745,6 @@ public class playerPhysicsMovements : MonoBehaviour
             playSticky = false;
             anim.SetBool("isStickySlime", playSticky);
         }
-		// if (other.gameObject.CompareTag("Trigger"))
-		// {
-		// 	// Player has entered the triggered area
-		// 	Debug.Log("Player exit the triggered area!");
-		// 	playerInside = false;
-		// 	visualCue.SetActive(false);
-		// 	// Add your desired actions or code here
-		// }
 
 	}
 
