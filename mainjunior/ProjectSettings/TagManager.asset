@@ -75,6 +75,9 @@ TagManager:
   - name: Stickywall
     uniqueID: 2536515373
     locked: 0
+  - name: Traps
+    uniqueID: 3455173781
+    locked: 0
   - name: Letters
     uniqueID: 3431071513
     locked: 0
