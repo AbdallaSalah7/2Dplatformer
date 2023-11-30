@@ -4842,7 +4842,7 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -726814461
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: -10
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -4994,7 +4994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7435585186798910971
 Transform:
   m_ObjectHideFlags: 0
@@ -5002,7 +5002,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7435585186798910973}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 200, y: 50.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5056,7 +5056,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -726814461
-  m_SortingLayer: 2
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -1580935527, guid: 9688b044cc72dcf4396015d7e80da8a0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5161,7 +5161,7 @@ MonoBehaviour:
   playSticky: 0
   outOfStickJump: 1
   stickjumpVelocity: 14
-  ch2belowjump: 1
+  ch2belowjump: 0
 --- !u!95 &7435585186798910967
 Animator:
   serializedVersion: 5
@@ -5442,8 +5442,6 @@ MonoBehaviour:
   hitmap: {fileID: 0}
   MovePlatform: {fileID: 0}
   dust: {fileID: 1749998831214520847}
-  DialogueBox: {fileID: 0}
-  HallwayDialogueBox: {fileID: 0}
   stickjumpVelocity: 14
   ch2belowjump: 0
   bulletPrefab: {fileID: 2369842850242115381, guid: 009eeef230cf2ae46ba12cd99c6ef1ea, type: 3}
@@ -5453,6 +5451,8 @@ MonoBehaviour:
   playSticky: 0
   outOfStickJump: 1
   jumpboost: 0
+  slideSpeed: 0
+  slideAccel: 0
   dashingVelocity: 14
   dashingTime: 0.5
 --- !u!1001 &1749998831769853427
