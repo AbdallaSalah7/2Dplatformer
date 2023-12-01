@@ -9,7 +9,8 @@ public class levelManager : MonoBehaviour
     public static levelManager instance;
     public float waitToReswamp;
     public int gemsCollected;
-    bool first = true;
+    [SerializeField] GameObject target;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -18,12 +19,8 @@ public class levelManager : MonoBehaviour
     }
     void Start()
     {
-        if(first){
-        playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
-        first = false;
-        }
-        else
-        playerPhysicsMovements.instance.transform.position = new Vector2(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"));
+        //playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
+        playerPhysicsMovements.instance.transform.position = target.transform.position;
     }
 
     // Update is called once per frame
