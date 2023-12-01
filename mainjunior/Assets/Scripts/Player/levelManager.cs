@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,7 @@ public class levelManager : MonoBehaviour
     public static levelManager instance;
     public float waitToReswamp;
     public int gemsCollected;
+    bool first = true;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -16,6 +18,11 @@ public class levelManager : MonoBehaviour
     }
     void Start()
     {
+        if(first){
+        playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
+        first = false;
+        }
+        else
         playerPhysicsMovements.instance.transform.position = new Vector2(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"));
     }
 

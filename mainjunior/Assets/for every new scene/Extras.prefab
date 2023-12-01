@@ -86,7 +86,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2877718634054627724}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb28716108fc2ca419f5c0554d3809ed, type: 3}
   m_Name: 
@@ -137,5 +137,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb28716108fc2ca419f5c0554d3809ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waitToReswamp: 1
+  waitToReswamp: 0
   gemsCollected: 0
