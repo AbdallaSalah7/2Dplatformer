@@ -21,19 +21,24 @@ public class PlayerInside : MonoBehaviour
     [Header("Entry 5")]
     [SerializeField] private GameObject visualCue5;
     public GameObject Entry5;
+    [Header("Entry 6")]
+    [SerializeField] private GameObject visualCue6;
+    public GameObject Entry6;
+    [Header("Entry 7")]
+    [SerializeField] private GameObject visualCue7;
+    public GameObject Entry7;
+    [Header("Entry 8")]
+    [SerializeField] private GameObject visualCue8;
+    public GameObject Entry8;
+    [Header("Entry 9")]
+    [SerializeField] private GameObject visualCue9;
+    public GameObject Entry9;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     void Update()
     {
         if (playerInside && Input.GetButton("Interact"))
         {
-            // Activate the "Frame 245" object
+
             if (Entry1 != null)
             {
                 Entry1.SetActive(true);
@@ -54,6 +59,26 @@ public class PlayerInside : MonoBehaviour
             {
                 Entry5.SetActive(true);
             }
+            if (Entry6 != null)
+            {
+                Entry6.SetActive(true);
+            }
+            if (Entry7 != null)
+            {
+                Entry7.SetActive(true);
+            }
+            if (Entry8 != null)
+            {
+                Entry8.SetActive(true);
+            }
+            if (Entry9 != null)
+            {
+                Entry9.SetActive(true);
+            }
+            if (Entry9 != null)
+            {
+                Entry9.SetActive(true);
+            }
             // if (Input.GetButton("Interact") && Entry1Active == true)
             // {
             //     Entry1.SetActive(false);
@@ -67,53 +92,79 @@ public class PlayerInside : MonoBehaviour
             Entry3.SetActive(false);
             Entry4.SetActive(false);
             Entry5.SetActive(false);
+            Entry6.SetActive(false);
+            Entry7.SetActive(false);
+            Entry8.SetActive(false);
+            Entry9.SetActive(false);
+
         }
 
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-
         if (other.gameObject.CompareTag("Trigger"))
         {
             // Player has entered the triggered area
             Debug.Log("Player entered the triggered area!");
             playerInside = true;
             visualCue1.SetActive(true);
-            // Add your desired actions or code here
+
         }
         if (other.gameObject.name.Equals("Trigger2"))
         {
             Debug.Log("Player entered the triggered area!");
             playerInside = true;
             visualCue2.SetActive(true);
-            // Add your desired actions or code here
+
         }
         if (other.gameObject.name.Equals("Trigger3"))
         {
             Debug.Log("Player entered the triggered area!");
             playerInside = true;
             visualCue3.SetActive(true);
-            // Add your desired actions or code here
+
         }
         if (other.gameObject.name.Equals("Trigger4"))
         {
             Debug.Log("Player entered the triggered area!");
             playerInside = true;
             visualCue4.SetActive(true);
-            // Add your desired actions or code here
         }
         if (other.gameObject.name.Equals("Trigger5"))
         {
             Debug.Log("Player entered the triggered area!");
             playerInside = true;
             visualCue5.SetActive(true);
-            // Add your desired actions or code here
         }
+        if (other.gameObject.name.Equals("Trigger6"))
+        {
+            Debug.Log("Player entered the triggered area!");
+            playerInside = true;
+            visualCue6.SetActive(true);
+        }
+        if (other.gameObject.name.Equals("Trigger7"))
+        {
+            Debug.Log("Player entered the triggered area!");
+            playerInside = true;
+            visualCue7.SetActive(true);
+        }
+        if (other.gameObject.name.Equals("Trigger8"))
+        {
+            Debug.Log("Player entered the triggered area!");
+            playerInside = true;
+            visualCue8.SetActive(true);
+        }
+        if (other.gameObject.name.Equals("Trigger9"))
+        {
+            Debug.Log("Player entered the triggered area!");
+            playerInside = true;
+            visualCue9.SetActive(true);
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-
 
         if (other.gameObject.CompareTag("Trigger"))
         {
@@ -122,7 +173,6 @@ public class PlayerInside : MonoBehaviour
             playerInside = false;
             visualCue1.SetActive(false);
             Entry1.SetActive(false);
-            // Add your desired actions or code here
         }
         if (other.gameObject.name.Equals("Trigger2"))
         {
@@ -130,7 +180,6 @@ public class PlayerInside : MonoBehaviour
             Debug.Log("Player exit the triggered area!");
             playerInside = false;
             visualCue2.SetActive(false);
-            // Add your desired actions or code here
         }
         if (other.gameObject.name.Equals("Trigger3"))
         {
@@ -138,7 +187,6 @@ public class PlayerInside : MonoBehaviour
             Debug.Log("Player exit the triggered area!");
             playerInside = false;
             visualCue3.SetActive(false);
-            // Add your desired actions or code here
         }
         if (other.gameObject.name.Equals("Trigger4"))
         {
@@ -146,7 +194,7 @@ public class PlayerInside : MonoBehaviour
             Debug.Log("Player exit the triggered area!");
             playerInside = false;
             visualCue4.SetActive(false);
-            // Add your desired actions or code here
+
         }
         if (other.gameObject.name.Equals("Trigger5"))
         {
@@ -154,9 +202,36 @@ public class PlayerInside : MonoBehaviour
             Debug.Log("Player exit the triggered area!");
             playerInside = false;
             visualCue5.SetActive(false);
-            // Add your desired actions or code here
         }
+        if (other.gameObject.name.Equals("Trigger6"))
+        {
+            // Player has entered the triggered area
+            Debug.Log("Player exit the triggered area!");
+            playerInside = false;
+            visualCue6.SetActive(false);
 
+        }
+        if (other.gameObject.name.Equals("Trigger7"))
+        {
+            // Player has entered the triggered area
+            Debug.Log("Player exit the triggered area!");
+            playerInside = false;
+            visualCue7.SetActive(false);
+        }
+        if (other.gameObject.name.Equals("Trigger8"))
+        {
+            // Player has entered the triggered area
+            Debug.Log("Player exit the triggered area!");
+            playerInside = false;
+            visualCue8.SetActive(false);
+        }
+        if (other.gameObject.name.Equals("Trigger9"))
+        {
+            // Player has entered the triggered area
+            Debug.Log("Player exit the triggered area!");
+            playerInside = false;
+            visualCue9.SetActive(false);
+        }
     }
 
 }
