@@ -36,7 +36,6 @@ public class FollowEnemy : EnemyDamage
 
         if (GetComponent<Health>().dead == true)
             {
-                print("test");
                 boxcollider.enabled = false;
                 speed = 0;
                 StartCoroutine(Des());

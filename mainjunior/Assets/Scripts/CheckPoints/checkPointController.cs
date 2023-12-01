@@ -10,7 +10,13 @@ public class checkPointController : MonoBehaviour
     public Vector3 spawnPoint;
     private void Awake()
     {
-        instance = this;
+        if (instance != null && instance != this) {
+            Destroy(gameObject);
+        }
+        else {
+            DontDestroyOnLoad( transform.root);
+            instance = this;
+        }
     }
     void Start()
     {
