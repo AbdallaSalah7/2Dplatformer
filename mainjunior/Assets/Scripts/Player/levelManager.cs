@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class levelManager : MonoBehaviour
 {
     public static levelManager instance;
     public float waitToReswamp;
-    public int gemsCollected;
+   public int gemsCollected;
     // Start is called before the first frame update
     private void Awake()
     {
@@ -16,7 +15,7 @@ public class levelManager : MonoBehaviour
     }
     void Start()
     {
-        playerPhysicsMovements.instance.transform.position = new Vector2(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"));
+        
     }
 
     // Update is called once per frame
@@ -35,12 +34,10 @@ public class levelManager : MonoBehaviour
 
         yield return new WaitForSeconds(waitToReswamp);
 
-        //playerPhysicsMovements.instance.gameObject.SetActive(true);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        playerPhysicsMovements.instance.gameObject.SetActive(true);
 
         //set the player position to the stored spawn position
-        //playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
-        playerPhysicsMovements.instance.transform.position = new Vector2(PlayerPrefs.GetFloat("x"), PlayerPrefs.GetFloat("y"));
+        playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
 
         //playerHealthController.instance.currentHealth = playerHealthController.instance.maxHealth;
         //UIController.instance.updateHealthDisplay();
