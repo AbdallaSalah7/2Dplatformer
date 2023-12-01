@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
 
-public class SpiderEnemyAI : MonoBehaviour
+public class SpiderEnemyAI : EnemyDamage
 {
     [Header("Pathfinding")]
     public Transform target;

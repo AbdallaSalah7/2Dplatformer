@@ -11,6 +11,11 @@ public class CheckPoint : MonoBehaviour
     {
         if (other.tag.Equals("Player"))
         {   
+            var xPos = playerPhysicsMovements.instance.transform.position.x;
+            var yPos = playerPhysicsMovements.instance.transform.position.y;
+            PlayerPrefs.SetFloat("x",xPos);
+            PlayerPrefs.SetFloat("y",yPos);
+            PlayerPrefs.Save();
             checkPointController.instance.setSpawnPoint(transform.position);
         }
     }
