@@ -75,10 +75,7 @@ public class PlayerInside : MonoBehaviour
             {
                 Entry9.SetActive(true);
             }
-            if (Entry9 != null)
-            {
-                Entry9.SetActive(true);
-            }
+
             // if (Input.GetButton("Interact") && Entry1Active == true)
             // {
             //     Entry1.SetActive(false);
@@ -86,7 +83,6 @@ public class PlayerInside : MonoBehaviour
         }
         if (!playerInside)
         {
-            // Activate the "Frame 245" object
             Entry1.SetActive(false);
             Entry2.SetActive(false);
             Entry3.SetActive(false);

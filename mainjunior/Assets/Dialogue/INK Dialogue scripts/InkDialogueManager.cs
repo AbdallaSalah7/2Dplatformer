@@ -72,7 +72,7 @@ public class InkDialogueManager : MonoBehaviour
 
 
         if (canContinueToNextLine
-            && Input.GetButton("down"))
+            && Input.GetButton("continue"))
         {
             ContinueStory();
         }
