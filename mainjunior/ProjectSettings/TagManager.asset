@@ -19,6 +19,7 @@ TagManager:
   - Key
   - Traps
   - Trigger
+  - Destructable
   layers:
   - Default
   - TransparentFX
@@ -40,7 +41,7 @@ TagManager:
   - Cam
   - camFrame
   - Sky
-  - 
+  - Destructable
   - 
   - 
   - 
