@@ -29,7 +29,7 @@ public class InkDialogueManager : MonoBehaviour
     // [SerializeField] private AudioSource audioSource;
 
     private Story currentStory;
-    public bool dialogueIsPlaying { get; private set; }
+    [SerializeField] public bool dialogueIsPlaying { get; private set; }
 
     private bool canContinueToNextLine = false;
 
@@ -69,7 +69,15 @@ public class InkDialogueManager : MonoBehaviour
         {
             return;
         }
+        if (dialogueIsPlaying)
+        {
+            playerPhysicsMovements.instance.dialoguePlaying = true;
+           
+        }
+        else if(!dialogueIsPlaying){
+            playerPhysicsMovements.instance.dialoguePlaying = false;
 
+        }
 
         if (canContinueToNextLine
             && Input.GetButton("continue"))
@@ -90,7 +98,7 @@ public class InkDialogueManager : MonoBehaviour
     private IEnumerator ExitDialogueMode()
     {
         yield return new WaitForSeconds(0.2f);
-
+        playerPhysicsMovements.instance.dialoguePlaying = false;
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
