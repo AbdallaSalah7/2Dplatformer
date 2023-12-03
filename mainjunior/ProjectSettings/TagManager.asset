@@ -96,3 +96,6 @@ TagManager:
   - name: roommates
     uniqueID: 803369681
     locked: 0
+  - name: rain
+    uniqueID: 2712655009
+    locked: 0
