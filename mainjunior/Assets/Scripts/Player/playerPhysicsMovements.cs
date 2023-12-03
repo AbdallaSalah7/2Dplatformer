@@ -165,6 +165,14 @@ public class playerPhysicsMovements : MonoBehaviour
 	//-----------------------------LETTERS----------------------------//
 
 
+
+
+
+
+	//-----------------------------CUTSCENE----------------------------//
+	private bool cutsceneOn;
+
+
 	//--------------------------------------INITIAL FUNCTIONS-----------------------------------------------
 	private void Awake()
 	{
@@ -203,6 +211,8 @@ public class playerPhysicsMovements : MonoBehaviour
 		switches = Object.FindObjectsOfType<SwitchingPlatforms>();
 
         altswitches = Object.FindObjectsOfType<AltSwitchingPlatforms>();
+
+		cutsceneOn = false;
 	}
 
 
@@ -227,6 +237,11 @@ public class playerPhysicsMovements : MonoBehaviour
 		// }
 		//Check game paused
 		if (PauseMenu.isPaused){
+			return;
+		}
+
+		if(cutsceneOn){
+
 			return;
 		}
 
@@ -772,5 +787,19 @@ public class playerPhysicsMovements : MonoBehaviour
         }
     }
 
+
+
+
+	//--------------------------------------------------------------CUTSCENES-------------------------------------------------------------------------------------
+
+	public void DisableControlsForCutscene(){
+
+		cutsceneOn = true;
+	}
+
+	public void EnableControlsForMovement(){
+
+		cutsceneOn = false;
+	}
 	
 }
