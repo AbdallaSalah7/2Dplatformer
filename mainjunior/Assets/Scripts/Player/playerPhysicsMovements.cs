@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEditorInternal.Profiling;
@@ -78,6 +79,10 @@ public class playerPhysicsMovements : MonoBehaviour
 	public float jumpHangAccelerationMult = 1f;
 	public float jumpHangMaxSpeedMult = 1f;
 
+	//Wall Jump
+	private float _wallJumpStartTime;
+	private int _lastWallJumpDir;
+
 
 
 
@@ -102,8 +107,7 @@ public class playerPhysicsMovements : MonoBehaviour
 	[Range(0.01f, 0.5f)] public float coyoteTime = 0.2f; //Grace period after falling off a platform, where you can still jump
 	[Range(0.01f, 0.5f)] public float jumpInputBufferTime = 0.2f; //Grace period after pressing jump where a jump will be automatically performed once the requirements (eg. being grounded) are met.
 
-
-
+	
 
 	//--------------------------------------PLAYER CHECKS---------------------------------------------
 	[Header("Checks")]
@@ -147,6 +151,7 @@ public class playerPhysicsMovements : MonoBehaviour
 	public bool jumpboost;
 	public float slideSpeed;
 	public float slideAccel;
+	private bool IsSticky;
 
 	[Space(5)]
 
@@ -186,6 +191,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		IsFacingRight = true;
 		playSticky = false;
 		isGrounded = true;
+		IsSticky = false;
 		playerJumpCounter = 0;
 
 		//Physics calculations for gravity, run and jump
@@ -248,12 +254,18 @@ public class playerPhysicsMovements : MonoBehaviour
 		foreach (Collider2D collider in colliders)
 		{
 			StickyWall stickyWall = collider.GetComponent<StickyWall>();
-			/* if (stickyWall != null && stickyWall.isSticky)
+			 if (stickyWall != null && stickyWall.isSticky == true)
             {
+				//print(stickyWall.isSticky);
 				//print("test");
-                RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall sure
-                break; 
-			} */
+                //RB.velocity = Vector2.zero; // set player's velocity to zero to make it stick to the wall sure
+                //break; 
+				//IsSticky = true;
+			}
+			//else
+				//IsSticky = false;
+
+			
 		}
 
 		//COLLECT ALL INPUTS----------------------------
@@ -295,8 +307,8 @@ public class playerPhysicsMovements : MonoBehaviour
 		if (IsSliding)
 			Slide();
 
-		// does not work
-
+		// // does not work
+		//IsSliding;
 	}
 
 
@@ -459,6 +471,20 @@ public class playerPhysicsMovements : MonoBehaviour
 
 			isGrounded = false;
 		}
+
+
+		//Right Wall Check
+			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, _groundLayer) && IsFacingRight)
+					|| (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, _groundLayer) && !IsFacingRight)) && !IsWallJumping)
+				LastOnWallRightTime = coyoteTime;
+
+			//Right Wall Check
+			if (((Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, _groundLayer) && !IsFacingRight)
+				|| (Physics2D.OverlapBox(backWallCheckPoint.position, wallCheckSize, 0, _groundLayer) && IsFacingRight)) && !IsWallJumping)
+				LastOnWallLeftTime = coyoteTime;
+
+			//Two checks needed for both left and right walls since whenever the play turns the wall checkPoints swap sides
+			LastOnWallTime = Mathf.Max(LastOnWallLeftTime, LastOnWallRightTime);
 	}
 
 
@@ -471,15 +497,22 @@ public class playerPhysicsMovements : MonoBehaviour
 		{
 
 			IsJumping = false;
-			_isJumpFalling = true;
+			
+			if(!IsWallJumping)
+				_isJumpFalling = true;
 		}
 
-		if (LastOnGroundTime > 0 && !IsJumping)  //if within coyote time
+		if (LastOnGroundTime > 0 && !IsJumping && !IsWallJumping)  //if within coyote time
 		{
 			_isJumpCut = false;
 
 			if (!IsJumping)
 				_isJumpFalling = false;
+		}
+
+		if (IsWallJumping && Time.time - _wallJumpStartTime > 1f)
+		{
+			IsWallJumping = false;
 		}
 
 		//Jump
@@ -491,12 +524,24 @@ public class playerPhysicsMovements : MonoBehaviour
 			Jump();
 
 		}
+		else if (CanWallJump() && LastPressedJumpTime > 0 && IsSticky)
+			{
+				IsWallJumping = true;
+				IsJumping = false;
+				_isJumpCut = false;
+				_isJumpFalling = false;
+
+				_wallJumpStartTime = Time.time;
+				_lastWallJumpDir = (LastOnWallRightTime > 0) ? -1 : 1;
+
+				WallJump(_lastWallJumpDir);
+			}
 	}
 
 	public void SlideCheck()
 	{
 
-		if (CanSlide() && Physics2D.OverlapBox(frontWallCheckPoint.position, wallCheckSize, 0, stickyWallLayer))
+		if (CanSlide() && ((LastOnWallLeftTime > 0) || (LastOnWallRightTime > 0)) && IsSticky)
 			IsSliding = true;
 		else
 			IsSliding = false;
@@ -532,9 +577,10 @@ public class playerPhysicsMovements : MonoBehaviour
 	{
 
 		if (IsSliding)
-		{
-			SetGravityScale(0);
-		}
+			{
+				SetGravityScale(0);
+				RB.mass = 2f;
+			}
 		else if (RB.velocity.y < 0 && moveInput.y < 0)
 		{
 			//runAccelAmount;
@@ -542,16 +588,19 @@ public class playerPhysicsMovements : MonoBehaviour
 			SetGravityScale(gravity * fastFallGravityMult);
 			//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
 			RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -maxFastFallSpeed));
+			RB.mass = 1f;
 		}
 		else if (_isJumpCut)
 		{
 			//Higher gravity if jump button released
 			SetGravityScale(gravity * jumpCutGravityMult);
 			RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -maxFallSpeed));
+			RB.mass = 1f;
 		}
 		else if ((IsJumping || _isJumpFalling) && Mathf.Abs(RB.velocity.y) < jumpHangTimeThreshold)
 		{
 			SetGravityScale(gravity * jumpHangGravityMult);
+			RB.mass = 1f;
 		}
 		else if (RB.velocity.y < 0)
 		{
@@ -559,12 +608,52 @@ public class playerPhysicsMovements : MonoBehaviour
 			SetGravityScale(gravity * fallGravityMult);
 			//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
 			RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -maxFallSpeed));
+			RB.mass = 1f;
 		}
 		else
 		{
 			//Default gravity if standing on a platform or moving upwards
 			SetGravityScale(gravity);
+			RB.mass = 1f;
 		}
+	}
+
+
+	//Wall Jump
+	private void WallJump(int dir)
+	{
+		//Ensures we can't call Wall Jump multiple times from one press
+		LastPressedJumpTime = 0;
+		LastOnGroundTime = 0;
+		LastOnWallRightTime = 0;
+		LastOnWallLeftTime = 0;
+
+		#region Perform Wall Jump
+		Vector2 force = new Vector2(jumpForce , jumpForce * 1.5f);
+		force.x *= dir; //apply force in opposite direction of wall
+
+		if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
+			force.x -= RB.velocity.x;
+
+		if (RB.velocity.y < 0) //checks whether player is falling, if so we subtract the velocity.y (counteracting force of gravity). This ensures the player always reaches our desired jump force or greater
+			force.y -= RB.velocity.y;
+
+		//Unlike in the run we want to use the Impulse mode.
+		//The default mode will apply are force instantly ignoring masss
+		RB.AddForce(force, ForceMode2D.Impulse);
+		#endregion
+	}
+
+
+	private bool CanWallJump()
+    {
+		return LastPressedJumpTime > 0 && LastOnWallTime > 0 && LastOnGroundTime <= 0 && (!IsWallJumping ||
+			 (LastOnWallRightTime > 0 && _lastWallJumpDir == 1) || (LastOnWallLeftTime > 0 && _lastWallJumpDir == -1));
+	}
+
+	private bool CanWallJumpCut()
+	{
+		return IsWallJumping && RB.velocity.y > 0;
 	}
 
 
@@ -749,6 +838,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		//Check overlapping with sticky
 		if (other.gameObject.CompareTag("SlimeLight"))
 		{
+			IsSticky = true;
 			playSticky = true;
 			anim.SetBool("isStickySlime", playSticky);
 		}
@@ -771,6 +861,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		//Check exiting the sticky
 		if (other.gameObject.CompareTag("SlimeLight"))
 		{
+			IsSticky = false;
 			playSticky = false;
 			anim.SetBool("isStickySlime", playSticky);
 		}

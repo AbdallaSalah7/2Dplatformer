@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static UnityEngine.Rendering.Universal.Light2D;
@@ -31,6 +32,7 @@ public class StickyWall : MonoBehaviour
         DrawRight = false;
         DrawLeft = false;
         canDraw = true;
+        isSticky = false;
 
         glowSlime.gameObject.SetActive(false);
         glowLights = new List<GameObject>();
@@ -39,7 +41,8 @@ public class StickyWall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(glowLights.Count == 0)
+            isSticky = false;
     }
 
     public void DrawRightTile(Vector3Int location){
