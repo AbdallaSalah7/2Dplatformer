@@ -268,6 +268,8 @@ public class playerPhysicsMovements : MonoBehaviour
 			
 		}
 
+
+
 		//COLLECT ALL INPUTS----------------------------
 		CollectInput();
 
@@ -510,7 +512,7 @@ public class playerPhysicsMovements : MonoBehaviour
 				_isJumpFalling = false;
 		}
 
-		if (IsWallJumping && Time.time - _wallJumpStartTime > 1f)
+		if (IsWallJumping && Time.time - _wallJumpStartTime > 0.2f)
 		{
 			IsWallJumping = false;
 		}
@@ -524,7 +526,7 @@ public class playerPhysicsMovements : MonoBehaviour
 			Jump();
 
 		}
-		else if (CanWallJump() && LastPressedJumpTime > 0 && IsSticky)
+		if (CanWallJump() && LastPressedJumpTime > 0 && IsSticky)
 			{
 				IsWallJumping = true;
 				IsJumping = false;
@@ -579,7 +581,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		if (IsSliding)
 			{
 				SetGravityScale(0);
-				RB.mass = 2f;
+				RB.mass = 1.5f;//mass
 			}
 		else if (RB.velocity.y < 0 && moveInput.y < 0)
 		{
@@ -606,7 +608,7 @@ public class playerPhysicsMovements : MonoBehaviour
 		{
 			//Higher gravity if falling
 			SetGravityScale(gravity * fallGravityMult);
-			//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high speeds
+			//Caps maximum fall speed, so when falling over large distances we don't accelerate to insanely high await ewai ta
 			RB.velocity = new Vector2(RB.velocity.x, Mathf.Max(RB.velocity.y, -maxFallSpeed));
 			RB.mass = 1f;
 		}
@@ -630,7 +632,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
 		#region Perform Wall Jump
 		Vector2 force = new Vector2(jumpForce , jumpForce * 1.5f);
-		force.x *= dir; //apply force in opposite direction of wall
+		force.x *= dir; //apply force in opposite direction of wall yk just do normal wall jump and make it in the video so it wallah?
 
 		if (Mathf.Sign(RB.velocity.x) != Mathf.Sign(force.x))
 			force.x -= RB.velocity.x;
@@ -841,6 +843,11 @@ public class playerPhysicsMovements : MonoBehaviour
 			IsSticky = true;
 			playSticky = true;
 			anim.SetBool("isStickySlime", playSticky);
+			print("stick");
+
+			IsSliding = true;
+			SetGravityScale(0);
+			//RB.mass = 1.5f;//mass
 		}
 		if (other.gameObject.name.Equals("StopControl"))
 		{
@@ -859,7 +866,7 @@ public class playerPhysicsMovements : MonoBehaviour
 	{
 
 		//Check exiting the sticky
-		if (other.gameObject.CompareTag("SlimeLight"))
+		if (other.gameObject.CompareTag("SlimeLight"))//look u enter sticky trigger then its true and when exit its false so idk at this point what to do yea i added that
 		{
 			IsSticky = false;
 			playSticky = false;
