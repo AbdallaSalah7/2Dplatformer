@@ -19,8 +19,8 @@ public class levelManager : MonoBehaviour
     }
     void Start()
     {
-        //playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
-        playerPhysicsMovements.instance.transform.position = target.transform.position;
+        playerPhysicsMovements.instance.transform.position = checkPointController.instance.spawnPoint;
+        //playerPhysicsMovements.instance.transform.position = target.transform.position;
     }
 
     // Update is called once per frame

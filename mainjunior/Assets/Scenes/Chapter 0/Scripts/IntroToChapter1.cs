@@ -29,6 +29,16 @@ public class IntroToChapter1 : MonoBehaviour
         if (other.tag == "Player")
         {
 
+            //var xPos = playerPhysicsMovements.instance.transform.position.x; //Vector3(-141.770004,22.2099991,0) so u want xPos and yPos to these okay
+            //var yPos = playerPhysicsMovements.instance.transform.position.y;
+            var xPos = -141.770004f;
+            var yPos = 22.2099991f;
+            PlayerPrefs.SetFloat("x",xPos);
+            PlayerPrefs.SetFloat("y",yPos);
+            PlayerPrefs.Save();
+            //checkPointController.instance.setSpawnPoint(transform.position);
+            checkPointController.instance.setSpawnPoint(new Vector3(xPos, yPos, 0));
+
             if (Vector2.Distance(player.transform.position, transform.position) > 0.1f)
             {
                 StartCoroutine(PortalIn());

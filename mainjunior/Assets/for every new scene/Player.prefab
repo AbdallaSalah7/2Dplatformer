@@ -5404,7 +5404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RB: {fileID: 0}
   anim: {fileID: 0}
-  runMaxSpeed: 4.5
+  runMaxSpeed: 8
   runAcceleration: 4.5
   runAccelAmount: 0
   runDecceleration: 4.5
@@ -5451,10 +5451,11 @@ MonoBehaviour:
   playSticky: 0
   outOfStickJump: 1
   jumpboost: 0
-  slideSpeed: 0
-  slideAccel: 0
-  dashingVelocity: 14
-  dashingTime: 0.5
+  slideSpeed: 0.7
+  slideAccel: 0.3
+  dashingVelocity: 0
+  dashingTime: 0
+  dialoguePlaying: 0
 --- !u!1001 &1749998831769853427
 PrefabInstance:
   m_ObjectHideFlags: 0

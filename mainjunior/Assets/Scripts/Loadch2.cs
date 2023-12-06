@@ -34,6 +34,14 @@ public class Loadch2 : MonoBehaviour
         if (other.tag == "Player")
         {
 
+            var xPos = -19.6000004f;//Vector3(-19.6000004,2.3900001,0)
+            var yPos = 2.3900001f;
+            PlayerPrefs.SetFloat("x",xPos);
+            PlayerPrefs.SetFloat("y",yPos);
+            PlayerPrefs.Save();
+            //checkPointController.instance.setSpawnPoint(transform.position);
+            checkPointController.instance.setSpawnPoint(new Vector3(xPos, yPos, 0));
+
             if (Vector2.Distance(player.transform.position, transform.position) > 0.1f)
             {
                 StartCoroutine(PortalIn());

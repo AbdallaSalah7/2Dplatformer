@@ -12,7 +12,8 @@ public class checkPointController : MonoBehaviour
     {
         if (instance != null && instance != this) {
             Destroy(gameObject);
-        }
+
+        } 
         else {
             DontDestroyOnLoad( transform.root);
             instance = this;
@@ -29,4 +30,5 @@ public class checkPointController : MonoBehaviour
     {
         spawnPoint = newSpawnPoint;
     }
+
 }

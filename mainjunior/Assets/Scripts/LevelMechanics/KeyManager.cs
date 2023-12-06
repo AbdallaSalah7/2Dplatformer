@@ -9,6 +9,7 @@ public class KeyManager : MonoBehaviour
     public bool isPickedUp;
     private Vector2 vel;
     public float smoothTime;
+    [SerializeField] GameObject bat;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +35,7 @@ public class KeyManager : MonoBehaviour
             isPickedUp = true;
             AudioManager.instance.playSFX(4);
             door.GetComponent<door>().KeyPickedUp = true;
+            bat.SetActive(true);
         }
 
     }
