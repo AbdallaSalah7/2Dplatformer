@@ -139,7 +139,7 @@ public class playerPhysicsMovements : MonoBehaviour
 
 	//------------------------------------------STICKY-----------------------------------------------------
 	[Header("Sticky")]
-	[SerializeField] private float stickjumpVelocity = 14f;
+	//[SerializeField] private float stickjumpVelocity = 14f;
 	[SerializeField] bool ch2belowjump;
 	public GameObject bulletPrefab;
 	public StickyBullet bulletpre;
